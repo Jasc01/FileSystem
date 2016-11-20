@@ -44,7 +44,12 @@ public class MainGUI {
 			switch(inputArray[0].toLowerCase()) {
 				case "file":
 					if(inputArray.length == 4) {
-						_fileSystem.createFile(inputArray[1], inputArray[2], inputArray[3]); //file nombre extensión contenido
+						if(_fileSystem.createFile(inputArray[1], inputArray[2], inputArray[3])) { //file nombre extensión contenido
+							System.out.println("File created");
+							_fileSystem.printDirectoryFiles();
+						} else {
+							System.out.println("Error creating file");
+						}
 					} else {
 						System.out.println("Invalid parameter");
 					}

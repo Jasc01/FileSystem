@@ -42,9 +42,6 @@ public class FileSystem {
 	}
 	
 	public boolean createFile(String pName, String pExtension, String pContent) {
-		//TODO Revisar Repetidos
-		//TODO Revisar símbolos no permitidos
-		//TODO Revisar tamaño
 		//TODO Enlazar
 		boolean fileCreated = false;
 		
@@ -59,10 +56,9 @@ public class FileSystem {
 			fileContent = new ArrayList<>(Files.readAllLines(FILE_PATH, StandardCharsets.UTF_8));
 			if(pContent.length() <= _secSize) {
 				for (int i = 0; i < fileContent.size(); i++) {
-				    if (fileContent.get(i).equals(stringFilled)) {
+				    if (fileContent.get(i).equals(stringFilled) && addFileToDirectory(pName, pExtension, pContent)) {
 				        fileContent.set(i, pContent);
 				        fileCreated = true;
-				        //TODO Si el file entró bien el disco, crearlo en el árbol (Hacer una función aparte para eso)
 				        break;
 				    }
 				}
@@ -76,8 +72,34 @@ public class FileSystem {
 		return fileCreated;
 	}
 	
+	private boolean addFileToDirectory(String pName, String pExtension, String pContent) {
+		File newFile = new File(pName, pExtension, pContent);
+		return searchDirectory().addFile(newFile);
+	}
+	
+	public DirectoryTree searchDirectory() {
+		String[] directoriesArray = _currentDirectory.split("/");
+		DirectoryTree directoryToReturn = _mainDirectory;
+		for(int indexString = 1; indexString < directoriesArray.length; indexString++) { //Empieza en 1 porque si la ruta es ROOT, entonces para que no entre al for
+			for(int i = 0; i < directoryToReturn.getDirectoryList().size(); i++) {
+				if(directoryToReturn.getDirectoryList().get(i).getName().toLowerCase().equals(directoriesArray[indexString].toLowerCase())) {
+					directoryToReturn = directoryToReturn.getDirectoryList().get(i);
+					break;
+				}
+			}
+		}
+		return directoryToReturn;
+	}
+	
 	public String getCurrentDirectory() {
 		return _currentDirectory;
+	}
+	
+	
+	public void printDirectoryFiles() {
+		for(File file : _mainDirectory.getFileList()) {
+			System.out.println(file.get_name());
+		}
 	}
 	
 	//TODO Hacer el método que cambia el directorio y el que crea el directorio

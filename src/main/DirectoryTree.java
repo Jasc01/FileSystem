@@ -18,7 +18,7 @@ public class DirectoryTree {
 	public boolean addDirectory(DirectoryTree pNewDirectory) {
 		boolean alreadyIs = false;
 		for(int i = 0; i < _directoryTree.size(); i++) {
-			if(_directoryTree.get(i).getName().equals(pNewDirectory.getName())) {
+			if(_directoryTree.get(i).getName().toLowerCase().equals(pNewDirectory.getName().toLowerCase())) {
 				alreadyIs = true;
 			}
 		}
@@ -29,8 +29,41 @@ public class DirectoryTree {
 		return false;
 	}
 	
+	public boolean addFile(File pNewFile) {
+		String mergedName = pNewFile.get_name() + "." + pNewFile.get_extension();
+		boolean alreadyIs = false;
+		for(File file : _files) {
+			String tempString = file.get_name() + "." + file.get_extension();
+			if(mergedName.equals(tempString)) {
+				alreadyIs = true;
+			}
+		}
+		if(!alreadyIs && checkName(pNewFile.get_name()) && checkName(pNewFile.get_extension())) {
+			_files.add(pNewFile);
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean checkName(String inputString) {
+		String[] forbiddenItems = {"/", "\\", ":", "*", "?", "|", "<", ">", "\""};
+	    for(int i =0; i < forbiddenItems.length; i++) {
+	        if(inputString.contains(forbiddenItems[i])) {
+	            return false;
+	        }
+	    }
+	    return true;
+	}
+	
 	public String getName() {
 		return _name;
 	}
 	
+	public ArrayList<DirectoryTree> getDirectoryList() {
+		return _directoryTree;
+	}
+	
+	public ArrayList<File> getFileList() {
+		return _files;
+	}
 }

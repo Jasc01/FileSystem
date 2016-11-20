@@ -37,5 +37,17 @@ public class File {
 	public int get_size() {
 		return _size;
 	}
+
+	public String get_extension() {
+		return _extension;
+	}
+
+	public String get_creationDate() {
+		return _creationDate;
+	}
+
+	public String get_modificationDate() {
+		return _modificationDate;
+	}
 	
 }
