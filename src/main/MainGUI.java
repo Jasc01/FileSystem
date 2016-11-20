@@ -46,9 +46,21 @@ public class MainGUI {
 					if(inputArray.length == 4) {
 						if(_fileSystem.createFile(inputArray[1], inputArray[2], inputArray[3])) { //file nombre extensión contenido
 							System.out.println("File created");
-							_fileSystem.printDirectoryFiles();
+							//_fileSystem.printDirectoryFiles();
 						} else {
 							System.out.println("Error creating file");
+						}
+					} else {
+						System.out.println("Invalid parameter");
+					}
+					break;
+				case "makedir":
+					if(inputArray.length == 2) {
+						if(_fileSystem.createDirectory(inputArray[1])) { //makedir nombre
+							System.out.println("Directory created");
+							// _fileSystem.printDirectories();
+						} else {
+							System.out.println("Error creating directory");
 						}
 					} else {
 						System.out.println("Invalid parameter");

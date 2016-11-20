@@ -77,7 +77,7 @@ public class FileSystem {
 		return searchDirectory().addFile(newFile);
 	}
 	
-	public DirectoryTree searchDirectory() {
+	public DirectoryTree searchDirectory() { //TODO Probar que esto funcione bien
 		String[] directoriesArray = _currentDirectory.split("/");
 		DirectoryTree directoryToReturn = _mainDirectory;
 		for(int indexString = 1; indexString < directoriesArray.length; indexString++) { //Empieza en 1 porque si la ruta es ROOT, entonces para que no entre al for
@@ -95,12 +95,22 @@ public class FileSystem {
 		return _currentDirectory;
 	}
 	
-	
+	// METODO PROVISIONAL
 	public void printDirectoryFiles() {
 		for(File file : _mainDirectory.getFileList()) {
 			System.out.println(file.get_name());
 		}
 	}
 	
+	public void printDirectories() {
+		for(DirectoryTree directory : _mainDirectory.getDirectoryList()) {
+			System.out.println(directory.getName());
+		}
+	}
+	
+	public boolean createDirectory(String pName) {
+		DirectoryTree newDirectory = new DirectoryTree(pName);
+		return searchDirectory().addDirectory(newDirectory);
+	}
 	//TODO Hacer el método que cambia el directorio y el que crea el directorio
 }
