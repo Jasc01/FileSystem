@@ -12,6 +12,7 @@ import java.util.Arrays;
 public class FileSystem {
 	
 	String _virtualDiskName;
+	String _rootName;
 	
 	int _secAmount;
 	int _secSize;
@@ -19,7 +20,8 @@ public class FileSystem {
 	String _currentDirectory;
 	
 	public FileSystem() {
-		_mainDirectory = new DirectoryTree("ROOT");
+		_rootName = "root:";
+		_mainDirectory = new DirectoryTree(_rootName);
 		_currentDirectory = _mainDirectory.getName();
 		_virtualDiskName = "Virtual Disc.txt";
 	}
@@ -74,18 +76,30 @@ public class FileSystem {
 	
 	private boolean addFileToDirectory(String pName, String pExtension, String pContent) {
 		File newFile = new File(pName, pExtension, pContent);
-		return searchDirectory().addFile(newFile);
+		return searchDirectory(_currentDirectory).addFile(newFile);
 	}
 	
-	public DirectoryTree searchDirectory() { //TODO Probar que esto funcione bien
-		String[] directoriesArray = _currentDirectory.split("/");
-		DirectoryTree directoryToReturn = _mainDirectory;
-		for(int indexString = 1; indexString < directoriesArray.length; indexString++) { //Empieza en 1 porque si la ruta es ROOT, entonces para que no entre al for
-			for(int i = 0; i < directoryToReturn.getDirectoryList().size(); i++) {
-				if(directoryToReturn.getDirectoryList().get(i).getName().toLowerCase().equals(directoriesArray[indexString].toLowerCase())) {
-					directoryToReturn = directoryToReturn.getDirectoryList().get(i);
-					break;
+	public DirectoryTree searchDirectory(String pDirectoryToSearch) {
+		String[] directoriesArray = pDirectoryToSearch.split("/");
+		DirectoryTree directoryToReturn = null;
+		DirectoryTree tempDirectory = _mainDirectory;
+		boolean directoryNotFound = false;
+		if(directoriesArray.length == 1) {
+			directoryToReturn = _mainDirectory;	
+		}
+		for(int indexString = 1; indexString < directoriesArray.length; indexString++) { //Empieza en 1 porque si la ruta es ROOT:, entonces para que no entre al for
+			directoryNotFound = true;
+			for(int i = 0; i < tempDirectory.getDirectoryList().size(); i++) {
+				if(tempDirectory.getDirectoryList().get(i).getName().toLowerCase().equals(directoriesArray[indexString].toLowerCase())) {
+					if(indexString == directoriesArray.length - 1) {
+						directoryToReturn = tempDirectory.getDirectoryList().get(i);
+					}
+					tempDirectory = tempDirectory.getDirectoryList().get(i);
+					directoryNotFound = false;
 				}
+			}
+			if(directoryNotFound) {
+				break;
 			}
 		}
 		return directoryToReturn;
@@ -101,7 +115,7 @@ public class FileSystem {
 			System.out.println(file.get_name());
 		}
 	}
-	
+	// MÉTODO PROVISIONAL
 	public void printDirectories() {
 		for(DirectoryTree directory : _mainDirectory.getDirectoryList()) {
 			System.out.println(directory.getName());
@@ -110,7 +124,25 @@ public class FileSystem {
 	
 	public boolean createDirectory(String pName) {
 		DirectoryTree newDirectory = new DirectoryTree(pName);
-		return searchDirectory().addDirectory(newDirectory);
+		return searchDirectory(_currentDirectory).addDirectory(newDirectory);
 	}
-	//TODO Hacer el método que cambia el directorio y el que crea el directorio
+	
+	public boolean changeDirectory(String pNewPath) { //TODO Validar cuando escribe nombre///////nombre2
+		String[] dividedPath = pNewPath.split("/");
+		if(dividedPath[0].toLowerCase().equals(_rootName.toLowerCase())) {
+			//Buscar path absoluto
+			if(searchDirectory(pNewPath) != null) {
+				_currentDirectory = pNewPath.toLowerCase();
+				return true;
+			}
+		} else {
+			String pathToSearch = _currentDirectory + "/" + pNewPath;
+			//Buscar path relativo
+			if(searchDirectory(pathToSearch) != null) {
+				_currentDirectory = pathToSearch.toLowerCase();
+				return true;
+			}
+		}
+		return false;
+	}
 }

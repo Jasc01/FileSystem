@@ -66,6 +66,18 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
+				case "cdir":
+					if(inputArray.length == 2) {
+						if(_fileSystem.changeDirectory(inputArray[1])) { //cdir path (absoluto o relativo)
+							System.out.println("Directory changed");
+							// _fileSystem.printDirectories();
+						} else {
+							System.out.println("Error changing directory - Probably not exist");
+						}
+					} else {
+						System.out.println("Invalid parameter");
+					}
+					break;
 				case "exit":
 					if(inputArray.length == 1) {
 						exit = true;
