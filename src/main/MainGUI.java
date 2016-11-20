@@ -78,6 +78,13 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
+				case "listdir":
+					if(inputArray.length == 1) {
+						_fileSystem.listCurrentDirectory(); //listdir
+					} else {
+						System.out.println("Invalid parameter");
+					}
+					break;
 				case "exit":
 					if(inputArray.length == 1) {
 						exit = true;

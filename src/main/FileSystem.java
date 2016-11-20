@@ -109,19 +109,6 @@ public class FileSystem {
 		return _currentDirectory;
 	}
 	
-	// METODO PROVISIONAL
-	public void printDirectoryFiles() {
-		for(File file : _mainDirectory.getFileList()) {
-			System.out.println(file.get_name());
-		}
-	}
-	// MÉTODO PROVISIONAL
-	public void printDirectories() {
-		for(DirectoryTree directory : _mainDirectory.getDirectoryList()) {
-			System.out.println(directory.getName());
-		}
-	}
-	
 	public boolean createDirectory(String pName) {
 		DirectoryTree newDirectory = new DirectoryTree(pName);
 		return searchDirectory(_currentDirectory).addDirectory(newDirectory);
@@ -145,4 +132,24 @@ public class FileSystem {
 		}
 		return false;
 	}
+	
+	public void listCurrentDirectory() {
+		printDirectories();
+		printDirectoryFiles();
+	}
+	
+	public void printDirectoryFiles() {
+		DirectoryTree directoryToShow = searchDirectory(_currentDirectory);
+		for(File file : directoryToShow.getFileList()) {
+			System.out.println(file.get_name() + " - FILE");
+		}
+	}
+
+	public void printDirectories() {
+		DirectoryTree directoryToShow = searchDirectory(_currentDirectory);
+		for(DirectoryTree directory : directoryToShow.getDirectoryList()) {
+			System.out.println(directory.getName() + " - DIRECTORY");
+		}
+	}
+	
 }
