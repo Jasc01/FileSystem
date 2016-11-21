@@ -172,10 +172,22 @@ public class FileSystem {
 		return false;
 	}
 	
+	public boolean showFile(String pFileName) {
+		String[] nameArray = getFixedFileName(pFileName);
+		if(nameArray != null) {
+			File file = searchFile(nameArray[0] + "." + nameArray[1]);
+			if(file != null) {
+				System.out.println("FILE CONTENT: \n" + file.get_content());
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private File searchFile(String pFileName) {
 		DirectoryTree currentDirectory = searchDirectory(_currentDirectory);
 		for(File file : currentDirectory.getFileList()) {
-			if((file.get_name() + "." + file.get_extension()).equals(pFileName)) {
+			if((file.get_name().toLowerCase() + "." + file.get_extension().toLowerCase()).equals(pFileName.toLowerCase())) {
 				return file;
 			}
 		}

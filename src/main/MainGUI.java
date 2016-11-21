@@ -95,6 +95,16 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
+				case "show": //TODO Hacer que acepte "algo como esto" (sin las comillas) como posible directorio
+					if(inputArray.length == 2) {
+						if(_fileSystem.showFile(inputArray[1])) { //cdir path (absoluto o relativo)
+						} else {
+							System.out.println("Error showing file - Probably not exist");
+						}
+					} else {
+						System.out.println("Invalid parameter");
+					}
+					break;
 				case "exit":
 					if(inputArray.length == 1) {
 						exit = true;
