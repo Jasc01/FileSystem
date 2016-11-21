@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class FileSystem {
 	
@@ -335,6 +336,26 @@ public class FileSystem {
 			return toReturn;
 		}
 		return null;
+	}
+
+	public boolean copyRealToVirtual (String pRealPath) { //Copies a real file into the virtual file in the current directory
+		Path filep = Paths.get(pRealPath);
+		try {
+			java.io.File file  = filep.toFile();
+			String filename = file.getName();
+			
+			String[] splitfilename = filename.split("\\.");
+			String allcontents ="";
+			
+			List<String> contents = Files.readAllLines(filep);
+			for (int i = 0; i < contents.size(); i++) { allcontents += contents.get(i); }
+			
+			return createFile(splitfilename[0], splitfilename[1], allcontents, false);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 }

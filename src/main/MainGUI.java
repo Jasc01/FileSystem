@@ -119,16 +119,25 @@ public class MainGUI {
 	}
 	public void show (String[] pInputArray) {
 		if(pInputArray.length == 2) {
-			if(_fileSystem.showFile(pInputArray[1])) { //cdir path (absoluto o relativo)
+			if(_fileSystem.showFile(pInputArray[1])) { //show filename 
 			} else {
-				System.out.println("Error showing file - Probably not exist");
+				System.out.println("Error showing file - Probably doesn't exist");
 			}
 		} else {
 			System.out.println("Invalid parameter");
 		}
 		
 	}
-	public void copyrv (String[] pInputArray){}
+	public void copyrv (String[] pInputArray){
+		if(pInputArray.length == 2) {
+			if(_fileSystem.copyRealToVirtual(pInputArray[1])) { //copyrv realpath virtualpath 
+			} else {
+				System.out.println("Error showing file - Probably doesn't exist");
+			}
+		} else {
+			System.out.println("Invalid parameter");
+		}
+	}
 	public void copyvr (String[] pInputArray){}
 	public void copyvv (String[] pInputArray){}
 	
