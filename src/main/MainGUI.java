@@ -49,10 +49,9 @@ public class MainGUI {
 						} else { 
 						  System.out.println("File already exists, do you want to overwrite it? (y/n)");
                           String newInput = _input.nextLine();
-                          String[] ehh = newInput.split("\\s+");
-                          if(ehh[0].toLowerCase()=="y"){
+                          if(newInput.toLowerCase().equals("y")){
                             _fileSystem.createFile(inputArray[1],inputArray[2], inputArray[3], true);
-                            System.out.println("Directory created");
+                            System.out.println("File created");
                           } else {
                             System.out.println("Error creating directory");
                           }
@@ -68,8 +67,7 @@ public class MainGUI {
 						} else {
 							System.out.println("Directory already exists, do you want to overwrite it? (y/n)");
 							String newInput = _input.nextLine();
-							String[] ehh = newInput.split("\\s+");
-							if(ehh[0].toLowerCase()=="y"){
+							if(newInput.toLowerCase().equals("y")){
 							  _fileSystem.createDirectory(inputArray[1], true);
 							  System.out.println("Directory created");
 							} else {

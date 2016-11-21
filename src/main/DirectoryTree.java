@@ -40,7 +40,7 @@ public class DirectoryTree {
 	  for(int i = 0; i < _files.size(); i++){
 	    f = _files.get(i);
 	    if(f.get_name().equals(pFile.get_name()) && f.get_extension().equals(pFile.get_extension())){
-	      _directoryTree.remove(i);
+	      _files.remove(i);
 	      break;
 	    }
 	  }
