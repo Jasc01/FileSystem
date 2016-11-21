@@ -43,6 +43,35 @@ public class FileSystem {
 		}
 	}
 	
+	public boolean deleteFile(String pName, String pExtension){
+	  boolean fileDeleted = false;
+	  
+	  char[] bytes = new char[_secSize];
+	  Arrays.fill(bytes, ' ');
+	  String emptyString = new String(bytes);
+	  
+	  Path FILE_PATH = Paths.get(_virtualDiskName);
+	  ArrayList<String> fileContent;
+	  try{
+	    fileContent = new ArrayList<>(Files.readAllLines(FILE_PATH, StandardCharsets.UTF_8));
+	    for(int i = 0; i < _mainDirectory.getFileList().size(); i++){
+	      File file = _mainDirectory.getFileList().get(i);
+	      if(file.get_name().equals(pName) && file.get_extension().equals(pExtension)){
+	        ArrayList<Integer> pos = file.get_fileLines();
+	        for(Integer j : pos){
+	          fileContent.set(j, emptyString);
+	        }
+	        fileDeleted = true;
+	        break;
+	      }
+	    }
+	    Files.write(FILE_PATH, fileContent, StandardCharsets.UTF_8);
+	  } catch (Exception e){
+	    System.out.println("Error deleting file");
+	  }
+	  return fileDeleted;
+	}
+	
 	public boolean createFile(String pName, String pExtension, String pContent, boolean pOverwrite) {
 		boolean fileCreated = false;
 		
@@ -52,6 +81,10 @@ public class FileSystem {
 	    
 		Path FILE_PATH = Paths.get(_virtualDiskName);
 		ArrayList<String> fileContent;
+		
+		if(pOverwrite){
+	      deleteFile(pName, pExtension);
+	    }
 		
 		try {
 			fileContent = new ArrayList<>(Files.readAllLines(FILE_PATH, StandardCharsets.UTF_8));
