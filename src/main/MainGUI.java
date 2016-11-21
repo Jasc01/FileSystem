@@ -53,7 +53,7 @@ public class MainGUI {
                             _fileSystem.createFile(inputArray[1],inputArray[2], inputArray[3], true);
                             System.out.println("File created");
                           } else {
-                            System.out.println("Error creating directory");
+                            System.out.println("Error creating file");
                           }
 						}
 					} else {
