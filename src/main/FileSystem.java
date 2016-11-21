@@ -338,7 +338,7 @@ public class FileSystem {
 		return null;
 	}
 
-	public boolean copyRealToVirtual (String pRealPath) { //Copies a real file into the virtual file in the current directory
+	public boolean copyRealToVirtual (String pRealPath, String pVirtualDestination) { //Copies a real file into the virtual file in the current directory
 		Path filep = Paths.get(pRealPath);
 		try {
 			java.io.File file  = filep.toFile();
@@ -346,16 +346,29 @@ public class FileSystem {
 			
 			String[] splitfilename = filename.split("\\.");
 			String allcontents ="";
+			String[] finalfilename = {"", ""};
+			for (int i = 0; i < splitfilename.length-1; i++) { finalfilename[0] += splitfilename[i]; }
+			finalfilename[1] = splitfilename[splitfilename.length-1];
 			
 			List<String> contents = Files.readAllLines(filep);
 			for (int i = 0; i < contents.size(); i++) { allcontents += contents.get(i); }
 			
-			return createFile(splitfilename[0], splitfilename[1], allcontents, false);
+			//System.out.println(finalfilename[0]+ " " + finalfilename[1] +" " +  allcontents);
+			return createFile(finalfilename[0], finalfilename[1], allcontents, false);
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace(); //Red flash error
+			System.out.println("Invalid real path");
 			return false;
 		}
+	}
+	
+	public boolean copyVirtualToReal (String pVirtualPath, String pRealPath) { //Copies a real file into the virtual file in the current directory
+		return false;
+	}
+	
+	public boolean copyVirtualToVirtual (String pVirtualOrigin, String pVirtualDestination) { //Copies a real file into the virtual file in the current directory
+		return false;
 	}
 	
 }

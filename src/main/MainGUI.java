@@ -93,7 +93,7 @@ public class MainGUI {
 			if(_fileSystem.changeDirectory(pInputArray[1])) { //cdir path (absoluto o relativo)
 				System.out.println("Directory changed");
 			} else {
-				System.out.println("Error changing directory - Probably not exist");
+				System.out.println("Error changing directory - Probably doesn't exist");
 			}
 		} else {
 			System.out.println("Invalid parameter");
@@ -111,7 +111,7 @@ public class MainGUI {
 		if(pInputArray.length == 2) {
 			if(_fileSystem.showProperties(pInputArray[1])) { //cdir path (absoluto o relativo)
 			} else {
-				System.out.println("Error showing file properties - Probably not exist");
+				System.out.println("Error showing file properties - Probably doesn't exist");
 			}
 		} else {
 			System.out.println("Invalid parameter");
@@ -129,18 +129,35 @@ public class MainGUI {
 		
 	}
 	public void copyrv (String[] pInputArray){
-		if(pInputArray.length == 2) {
-			if(_fileSystem.copyRealToVirtual(pInputArray[1])) { //copyrv realpath virtualpath 
+		if(pInputArray.length == 3) {
+			if(_fileSystem.copyRealToVirtual(pInputArray[1], pInputArray[2])) { //copyrv realpath virtualpath 
 			} else {
-				System.out.println("Error showing file - Probably doesn't exist");
+				System.out.println("Error copying file - invalid path or internal error");
 			}
 		} else {
 			System.out.println("Invalid parameter");
 		}
 	}
-	public void copyvr (String[] pInputArray){}
-	public void copyvv (String[] pInputArray){}
-	
+	public void copyvr (String[] pInputArray){
+		if(pInputArray.length == 3) { 
+			if(_fileSystem.copyVirtualToReal(pInputArray[1], pInputArray[2])) { //copyvr virtualpath realpath  
+			} else {
+				System.out.println("Error copying file - invalid path or internal error");
+			}
+		} else {
+			System.out.println("Invalid parameter");
+		}
+	}
+	public void copyvv (String[] pInputArray){
+		if(pInputArray.length == 3) { 
+			if(_fileSystem.copyVirtualToVirtual(pInputArray[1], pInputArray[2])) { //copyrv realpath virtualpath 
+			} else {
+				System.out.println("Error copying file - invalid path or internal error");
+			}
+		} else {
+			System.out.println("Invalid parameter");
+		}
+	}
 	
 	public void readCommand() {
 		boolean exit = false;
