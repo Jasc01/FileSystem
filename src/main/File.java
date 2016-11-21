@@ -2,6 +2,7 @@ package main;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -14,7 +15,9 @@ public class File {
 	String _modificationDate;
 	int _size;
 	
-	public File(String pName, String pExtension, String pContent) {
+	ArrayList<Integer> _fileLines;
+	
+	public File(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		
@@ -24,6 +27,8 @@ public class File {
 		_size = pContent.length();
 		_creationDate = dateFormat.format(date);
 		_modificationDate = dateFormat.format(date);
+		
+		_fileLines = pFileLines;
 	}
 
 	public String get_name() {
@@ -49,5 +54,8 @@ public class File {
 	public String get_modificationDate() {
 		return _modificationDate;
 	}
-	
+
+	public ArrayList<Integer> get_fileLines() {
+		return _fileLines;
+	}
 }

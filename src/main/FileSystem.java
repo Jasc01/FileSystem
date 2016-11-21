@@ -58,14 +58,29 @@ public class FileSystem {
 			fileContent = new ArrayList<>(Files.readAllLines(FILE_PATH, StandardCharsets.UTF_8));
 			if(pContent.length() <= _secSize) {
 				for (int i = 0; i < fileContent.size(); i++) {
-				    if (fileContent.get(i).equals(stringFilled) && addFileToDirectory(pName, pExtension, pContent)) {
-				        fileContent.set(i, pContent);
-				        fileCreated = true;
-				        break;
+				    if (fileContent.get(i).equals(stringFilled)) {
+				    	ArrayList<Integer> lines = new ArrayList<>();
+				    	lines.add(i);
+				    	if(addFileToDirectory(pName, pExtension, pContent, lines)) {
+				    		fileContent.set(i, pContent);
+					        fileCreated = true;
+					        break;	
+				    	}
 				    }
 				}
 			} else {
 				//TODO Enlazar archivo a otro segmento cuando no cabe
+				ArrayList<String> stringDivided = divideString(pContent, _secSize);
+				ArrayList<Integer> memoryLeft = getMemoryLeftInFile(fileContent, stringFilled);
+				if(stringDivided.size() <= memoryLeft.size()) {
+					memoryLeft.subList(stringDivided.size(), memoryLeft.size()).clear();
+			    	if(addFileToDirectory(pName, pExtension, pContent, memoryLeft)) {
+			    		for(int i = 0 ; i < memoryLeft.size(); i++) {
+				    		fileContent.set(memoryLeft.get(i), stringDivided.get(i));	
+			    		}
+				        fileCreated = true;
+			    	}
+				}
 			}
 			Files.write(FILE_PATH, fileContent, StandardCharsets.UTF_8);
 		} catch (IOException e) {
@@ -74,8 +89,29 @@ public class FileSystem {
 		return fileCreated;
 	}
 	
-	private boolean addFileToDirectory(String pName, String pExtension, String pContent) {
-		File newFile = new File(pName, pExtension, pContent);
+	private ArrayList<Integer> getMemoryLeftInFile(ArrayList<String> pList, String pBlank) {
+		ArrayList<Integer> memoryLeft = new ArrayList<>();
+		for (int i = 0; i < pList.size(); i++) {
+			if (pList.get(i).equals(pBlank)) {
+				memoryLeft.add(i);
+			}
+		}
+		return memoryLeft;
+	}
+	
+	private ArrayList<String> divideString(String pString, int pSecSize) {
+		ArrayList<String> toReturn = new ArrayList<>();
+		while(pString.length() >= pSecSize) {
+			toReturn.add(pString.substring(0, pSecSize));
+			pString = pString.substring(pSecSize, pString.length());
+		}
+		if(!pString.equals(""))
+			toReturn.add(pString);
+		return toReturn;
+	}
+	
+	private boolean addFileToDirectory(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines) {
+		File newFile = new File(pName, pExtension, pContent, pFileLines);
 		return searchDirectory(_currentDirectory).addFile(newFile);
 	}
 	
@@ -152,8 +188,13 @@ public class FileSystem {
 		}
 	}
 	
-	public void modFile() {
+	public void modFile(String pFileName, String pNewContent) {
 		//TODO modificar un archivo que esté en el directorio actual
+		// Buscar el File correspondiente
+		// Buscar la línea (o líneas) en la que tiene la data
+		// Borrar esas líneas
+		// Volver a escribir en el archivo con first fit
+		// Modificar (setFile) el File con lo nuevo
 	}
 	
 	public boolean showProperties(String pFileName) {
