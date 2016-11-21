@@ -42,11 +42,10 @@ public class MainGUI {
 			userInput = _input.nextLine();
 			String[] inputArray = userInput.split("\\s+");
 			switch(inputArray[0].toLowerCase()) {
-				case "file":
+				case "file": //TODO Hacer que acepte "algo como esto" como nombre y extensión y contenido
 					if(inputArray.length == 4) {
 						if(_fileSystem.createFile(inputArray[1], inputArray[2], inputArray[3])) { //file nombre extensión contenido
 							System.out.println("File created");
-							//_fileSystem.printDirectoryFiles();
 						} else {
 							System.out.println("Error creating file");
 						}
@@ -54,11 +53,10 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
-				case "makedir":
+				case "makedir": //TODO Hacer que acepte "algo como esto" como nombre
 					if(inputArray.length == 2) {
 						if(_fileSystem.createDirectory(inputArray[1])) { //makedir nombre
 							System.out.println("Directory created");
-							// _fileSystem.printDirectories();
 						} else {
 							System.out.println("Error creating directory");
 						}
@@ -66,11 +64,10 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
-				case "cdir":
+				case "cdir": //TODO Hacer que acepte "algo como esto" (sin las comillas) como posible directorio
 					if(inputArray.length == 2) {
 						if(_fileSystem.changeDirectory(inputArray[1])) { //cdir path (absoluto o relativo)
 							System.out.println("Directory changed");
-							// _fileSystem.printDirectories();
 						} else {
 							System.out.println("Error changing directory - Probably not exist");
 						}
@@ -81,6 +78,19 @@ public class MainGUI {
 				case "listdir":
 					if(inputArray.length == 1) {
 						_fileSystem.listCurrentDirectory(); //listdir
+					} else {
+						System.out.println("Invalid parameter");
+					}
+					break;
+				case "modfile": //TODO Hacer que acepte "algo como esto" como posible archivo
+					// TODO Modificar un archivo que se encuentra en el directorio actual
+					break;
+				case "showpro": //TODO Hacer que acepte "algo como esto" (sin las comillas) como posible directorio
+					if(inputArray.length == 2) {
+						if(_fileSystem.showProperties(inputArray[1])) { //cdir path (absoluto o relativo)
+						} else {
+							System.out.println("Error showing file properties - Probably not exist");
+						}
 					} else {
 						System.out.println("Invalid parameter");
 					}

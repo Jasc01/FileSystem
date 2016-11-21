@@ -114,7 +114,7 @@ public class FileSystem {
 		return searchDirectory(_currentDirectory).addDirectory(newDirectory);
 	}
 	
-	public boolean changeDirectory(String pNewPath) { //TODO Validar cuando escribe nombre///////nombre2
+	public boolean changeDirectory(String pNewPath) { //TODO Validar cuando escribe nombre///////nombre2 (Esto podría quedar así, y poner de excusa que diay, si escribe más de un slash no encuentra el directorio)
 		String[] dividedPath = pNewPath.split("/");
 		if(dividedPath[0].toLowerCase().equals(_rootName.toLowerCase())) {
 			//Buscar path absoluto
@@ -138,18 +138,67 @@ public class FileSystem {
 		printDirectoryFiles();
 	}
 	
-	public void printDirectoryFiles() {
+	private void printDirectoryFiles() {
 		DirectoryTree directoryToShow = searchDirectory(_currentDirectory);
 		for(File file : directoryToShow.getFileList()) {
-			System.out.println(file.get_name() + " - FILE");
+			System.out.println(file.get_name() + "." + file.get_extension() + " - FILE");
 		}
 	}
 
-	public void printDirectories() {
+	private void printDirectories() {
 		DirectoryTree directoryToShow = searchDirectory(_currentDirectory);
 		for(DirectoryTree directory : directoryToShow.getDirectoryList()) {
 			System.out.println(directory.getName() + " - DIRECTORY");
 		}
+	}
+	
+	public void modFile() {
+		//TODO modificar un archivo que esté en el directorio actual
+	}
+	
+	public boolean showProperties(String pFileName) {
+		String[] nameArray = getFixedFileName(pFileName);
+		if(nameArray != null) {
+			File file = searchFile(nameArray[0] + "." + nameArray[1]);
+			if(file != null) {
+				System.out.println("FILE NAME: " + file.get_name());
+				System.out.println("EXTENSION: " + file.get_extension());
+				System.out.println("CREATION DATE: " + file.get_creationDate());
+				System.out.println("MODIFICATION DATE: " + file.get_modificationDate());
+				System.out.println("SIZE: " + file.get_size());
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private File searchFile(String pFileName) {
+		DirectoryTree currentDirectory = searchDirectory(_currentDirectory);
+		for(File file : currentDirectory.getFileList()) {
+			if((file.get_name() + "." + file.get_extension()).equals(pFileName)) {
+				return file;
+			}
+		}
+		return null;
+	}
+	
+	private String[] getFixedFileName(String pFileName) {
+		String[] toReturn  = new String[2];
+		String[] tempArray = pFileName.split("");
+		int dotPos = -1;
+		for (int i = 0; i < tempArray.length; i++) {
+			if(tempArray[i].equals(".")) {
+				dotPos = i;
+			}
+		}
+		if(dotPos != -1) {
+			String nameTemp = pFileName.substring(0, dotPos);
+			String extentionTemp = pFileName.substring(dotPos + 1, pFileName.length());
+			toReturn[0] = nameTemp;
+			toReturn[1] = extentionTemp;
+			return toReturn;
+		}
+		return null;
 	}
 	
 }
