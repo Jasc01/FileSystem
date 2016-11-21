@@ -91,7 +91,7 @@ public class DirectoryTree {
 	}
 	
 	private boolean checkName(String inputString) {
-		String[] forbiddenItems = {"/", "\\", ":", "*", "?", "|", "<", ">", "\""};
+		String[] forbiddenItems = {"/", "\\", ":", "*", "?", "|", "<", ">", "\"", "."};
 	    for(int i =0; i < forbiddenItems.length; i++) {
 	        if(inputString.contains(forbiddenItems[i])) {
 	            return false;
