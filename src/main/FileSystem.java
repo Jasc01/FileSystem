@@ -44,7 +44,6 @@ public class FileSystem {
 	}
 	
 	public boolean createFile(String pName, String pExtension, String pContent) {
-		//TODO Enlazar
 		boolean fileCreated = false;
 		
 	    char[] bytes = new char[_secSize];
@@ -68,8 +67,7 @@ public class FileSystem {
 				    	}
 				    }
 				}
-			} else {
-				//TODO Enlazar archivo a otro segmento cuando no cabe
+			} else { // Enlaza
 				ArrayList<String> stringDivided = divideString(pContent, _secSize);
 				ArrayList<Integer> memoryLeft = getMemoryLeftInFile(fileContent, stringFilled);
 				if(stringDivided.size() <= memoryLeft.size()) {
@@ -150,7 +148,7 @@ public class FileSystem {
 		return searchDirectory(_currentDirectory).addDirectory(newDirectory);
 	}
 	
-	public boolean changeDirectory(String pNewPath) { //TODO Validar cuando escribe nombre///////nombre2 (Esto podría quedar así, y poner de excusa que diay, si escribe más de un slash no encuentra el directorio)
+	public boolean changeDirectory(String pNewPath) { //NOTA: cuando escribe nombre///////nombre2 simplemente no lo permite
 		String[] dividedPath = pNewPath.split("/");
 		if(dividedPath[0].toLowerCase().equals(_rootName.toLowerCase())) {
 			//Buscar path absoluto
