@@ -107,6 +107,30 @@ public class MainGUI {
 			System.out.println("Invalid parameter");
 		}
 	}
+	public void showpro (String[] pInputArray) {
+		if(pInputArray.length == 2) {
+			if(_fileSystem.showProperties(pInputArray[1])) { //cdir path (absoluto o relativo)
+			} else {
+				System.out.println("Error showing file properties - Probably not exist");
+			}
+		} else {
+			System.out.println("Invalid parameter");
+		}
+	}
+	public void show (String[] pInputArray) {
+		if(pInputArray.length == 2) {
+			if(_fileSystem.showFile(pInputArray[1])) { //cdir path (absoluto o relativo)
+			} else {
+				System.out.println("Error showing file - Probably not exist");
+			}
+		} else {
+			System.out.println("Invalid parameter");
+		}
+		
+	}
+	public void copyrv (String[] pInputArray){}
+	public void copyvr (String[] pInputArray){}
+	public void copyvv (String[] pInputArray){}
 	
 	
 	public void readCommand() {
@@ -124,35 +148,17 @@ public class MainGUI {
 				case "file": file(inputArray); break;
 				case "makedir": makedir(inputArray); break;
 				case "cdir": cdir(inputArray); break;
-				
-				case "listdir":
-					break;
+				case "listdir": listdir(inputArray); break;
+				case "showpro": showpro(inputArray); break;
+				case "show": show(inputArray); break;
+				case "copyrv": copyrv(inputArray); break;
+				case "copyvr": copyvr(inputArray); break;
+				case "copyvv": copyvv(inputArray); break;
 				
 				case "modfile": 
 					// TODO Modificar un archivo que se encuentra en el directorio actual
 					break;
 				
-				case "showpro": 
-					if(inputArray.length == 2) {
-						if(_fileSystem.showProperties(inputArray[1])) { //cdir path (absoluto o relativo)
-						} else {
-							System.out.println("Error showing file properties - Probably not exist");
-						}
-					} else {
-						System.out.println("Invalid parameter");
-					}
-					break;
-				
-				case "show": 
-					if(inputArray.length == 2) {
-						if(_fileSystem.showFile(inputArray[1])) { //cdir path (absoluto o relativo)
-						} else {
-							System.out.println("Error showing file - Probably not exist");
-						}
-					} else {
-						System.out.println("Invalid parameter");
-					}
-					break;
 				
 				case "exit":
 					if(inputArray.length == 1) {
