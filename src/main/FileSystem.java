@@ -43,6 +43,56 @@ public class FileSystem {
 		}
 	}
 	
+	
+	//Falta probar
+	public boolean deleteDirectory(String pName){
+	  boolean directoryDeleted = false;
+	  DirectoryTree directory = searchDirectory(_currentDirectory);
+	  for(int i = 0; i < directory.getDirectoryList().size(); i++){
+	    DirectoryTree dt = directory.getDirectoryList().get(i);
+	    if(dt.getName().equals(pName)){
+	      directory.removeDirectory(dt);
+	      directoryDeleted = true;
+	      break;
+	    }
+	  }
+	  return directoryDeleted;
+	}
+	
+	//Falta probar
+	public boolean deleteFiles(ArrayList<String> pFiles){
+	  boolean filesDeleted = false;
+	  ArrayList<File> files = new ArrayList<>();
+	  DirectoryTree directory = searchDirectory(_currentDirectory);
+	  
+	  Path FILE_PATH = Paths.get(_virtualDiskName);
+      ArrayList<String> fileContent;
+      
+      try{
+        fileContent = new ArrayList<>(Files.readAllLines(FILE_PATH, StandardCharsets.UTF_8));
+        
+        for(int i = 0; i < directory.getFileList().size(); i++){
+          File f = directory.getFileList().get(i);
+          String name = f.get_name() + "." + f.get_extension();
+          if(pFiles.contains(name)){
+            files.add(f);
+            deleteFile(f.get_name(), f.get_extension());
+          }
+        }
+        if(!filesDeleted){
+          System.out.println("Error deleting files, reverting...");
+          for(File f : files){
+            directory.addFile(f, true);
+          }
+          Files.write(FILE_PATH, fileContent, StandardCharsets.UTF_8);
+        }
+      }catch(Exception e){
+        System.out.println("Error");
+      }
+	  return filesDeleted;
+	}
+	
+	//Probado
 	public boolean deleteFile(String pName, String pExtension){
 	  boolean fileDeleted = false;
 	  
@@ -54,12 +104,14 @@ public class FileSystem {
 	  ArrayList<String> fileContent;
 	  try{
 	    fileContent = new ArrayList<>(Files.readAllLines(FILE_PATH, StandardCharsets.UTF_8));
-	    for(int i = 0; i < _mainDirectory.getFileList().size(); i++){
-	      File file = _mainDirectory.getFileList().get(i);
+	    DirectoryTree directory = searchDirectory(_currentDirectory);
+	    for(int i = 0; i < directory.getFileList().size(); i++){
+	      File file = directory.getFileList().get(i);
 	      if(file.get_name().equals(pName) && file.get_extension().equals(pExtension)){
 	        ArrayList<Integer> pos = file.get_fileLines();
 	        for(Integer j : pos){
 	          fileContent.set(j, emptyString);
+	          directory.removeFile(file);
 	        }
 	        fileDeleted = true;
 	        break;
