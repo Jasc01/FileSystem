@@ -42,6 +42,19 @@ public class MainGUI {
 			userInput = _input.nextLine();
 			String[] inputArray = userInput.split("\\s+");
 			switch(inputArray[0].toLowerCase()) {
+				
+				case "help":
+					System.out.println("\n\nHELP:");
+					System.out.println("file /name /extension /content  \t | Creates new file in the current directory");
+					System.out.println("makedir /name  \t\t\t | Creates new directory inside the current one");
+					System.out.println("cdir /path \t\t\t\t | Changes the current directory");
+					System.out.println("listdir \t\t\t\t | Lists the contents of the directory");
+					System.out.println("modfile /path \t\t\t\t | Modifies the contents of the file given the path");
+					System.out.println("showpro /path \t\t\t\t | Displays the properties of the file in the given path");
+					System.out.println("show /path \t\t\t\t | Displays the file in the given path");
+					System.out.println("exit \t\t\t\t\t | Ends the program\n\n");
+					break;
+
 				case "file": //TODO Hacer que acepte "algo como esto" como nombre y extensión y contenido
 					if(inputArray.length == 4) {
 						if(_fileSystem.createFile(inputArray[1], inputArray[2], inputArray[3], false)) { //file nombre extensión contenido
@@ -60,6 +73,7 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
+				
 				case "makedir": //TODO Hacer que acepte "algo como esto" como nombre
 					if(inputArray.length == 2) {
 						if(_fileSystem.createDirectory(inputArray[1], false)) { //makedir nombre
@@ -78,6 +92,7 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
+				
 				case "cdir": //TODO Hacer que acepte "algo como esto" (sin las comillas) como posible directorio
 					if(inputArray.length == 2) {
 						if(_fileSystem.changeDirectory(inputArray[1])) { //cdir path (absoluto o relativo)
@@ -89,6 +104,7 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
+				
 				case "listdir":
 					if(inputArray.length == 1) {
 						_fileSystem.listCurrentDirectory(); //listdir
@@ -96,9 +112,11 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
+				
 				case "modfile": //TODO Hacer que acepte "algo como esto" como posible archivo
 					// TODO Modificar un archivo que se encuentra en el directorio actual
 					break;
+				
 				case "showpro": //TODO Hacer que acepte "algo como esto" (sin las comillas) como posible directorio
 					if(inputArray.length == 2) {
 						if(_fileSystem.showProperties(inputArray[1])) { //cdir path (absoluto o relativo)
@@ -109,6 +127,7 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
+				
 				case "show": //TODO Hacer que acepte "algo como esto" (sin las comillas) como posible directorio
 					if(inputArray.length == 2) {
 						if(_fileSystem.showFile(inputArray[1])) { //cdir path (absoluto o relativo)
@@ -119,6 +138,7 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
+				
 				case "exit":
 					if(inputArray.length == 1) {
 						exit = true;
@@ -126,11 +146,11 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
+				
 				default:
 					System.out.println("Command not found");
 					break;
 			}
 		}
 	}
-	
 }
