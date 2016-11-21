@@ -43,7 +43,7 @@ public class FileSystem {
 		}
 	}
 	
-	public boolean createFile(String pName, String pExtension, String pContent) {
+	public boolean createFile(String pName, String pExtension, String pContent, boolean pOverwrite) {
 		boolean fileCreated = false;
 		
 	    char[] bytes = new char[_secSize];
@@ -60,7 +60,7 @@ public class FileSystem {
 				    if (fileContent.get(i).equals(stringFilled)) {
 				    	ArrayList<Integer> lines = new ArrayList<>();
 				    	lines.add(i);
-				    	if(addFileToDirectory(pName, pExtension, pContent, lines)) {
+				    	if(addFileToDirectory(pName, pExtension, pContent, lines, pOverwrite)) {
 				    		fileContent.set(i, pContent);
 					        fileCreated = true;
 					        break;	
@@ -72,7 +72,7 @@ public class FileSystem {
 				ArrayList<Integer> memoryLeft = getMemoryLeftInFile(fileContent, stringFilled);
 				if(stringDivided.size() <= memoryLeft.size()) {
 					memoryLeft.subList(stringDivided.size(), memoryLeft.size()).clear();
-			    	if(addFileToDirectory(pName, pExtension, pContent, memoryLeft)) {
+			    	if(addFileToDirectory(pName, pExtension, pContent, memoryLeft, pOverwrite)) {
 			    		for(int i = 0 ; i < memoryLeft.size(); i++) {
 				    		fileContent.set(memoryLeft.get(i), stringDivided.get(i));	
 			    		}
@@ -108,9 +108,9 @@ public class FileSystem {
 		return toReturn;
 	}
 	
-	private boolean addFileToDirectory(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines) {
+	private boolean addFileToDirectory(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines, boolean pOverwrite) {
 		File newFile = new File(pName, pExtension, pContent, pFileLines);
-		return searchDirectory(_currentDirectory).addFile(newFile, false);
+		return searchDirectory(_currentDirectory).addFile(newFile, pOverwrite);
 	}
 	
 	public DirectoryTree searchDirectory(String pDirectoryToSearch) {
@@ -143,9 +143,9 @@ public class FileSystem {
 		return _currentDirectory;
 	}
 	
-	public boolean createDirectory(String pName) {
+	public boolean createDirectory(String pName, boolean pOverwrite) {
 		DirectoryTree newDirectory = new DirectoryTree(pName);
-		return searchDirectory(_currentDirectory).addDirectory(newDirectory, false);
+		return searchDirectory(_currentDirectory).addDirectory(newDirectory, pOverwrite);
 	}
 	
 	public boolean changeDirectory(String pNewPath) { //NOTA: cuando escribe nombre///////nombre2 simplemente no lo permite

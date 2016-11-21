@@ -44,10 +44,18 @@ public class MainGUI {
 			switch(inputArray[0].toLowerCase()) {
 				case "file": //TODO Hacer que acepte "algo como esto" como nombre y extensión y contenido
 					if(inputArray.length == 4) {
-						if(_fileSystem.createFile(inputArray[1], inputArray[2], inputArray[3])) { //file nombre extensión contenido
+						if(_fileSystem.createFile(inputArray[1], inputArray[2], inputArray[3], false)) { //file nombre extensión contenido
 							System.out.println("File created");
-						} else {
-							System.out.println("Error creating file");
+						} else { 
+						  System.out.println("File already exists, do you want to overwrite it? (y/n)");
+                          String newInput = _input.nextLine();
+                          String[] ehh = newInput.split("\\s+");
+                          if(ehh[0].toLowerCase()=="y"){
+                            _fileSystem.createFile(inputArray[1],inputArray[2], inputArray[3], true);
+                            System.out.println("Directory created");
+                          } else {
+                            System.out.println("Error creating directory");
+                          }
 						}
 					} else {
 						System.out.println("Invalid parameter");
@@ -55,10 +63,18 @@ public class MainGUI {
 					break;
 				case "makedir": //TODO Hacer que acepte "algo como esto" como nombre
 					if(inputArray.length == 2) {
-						if(_fileSystem.createDirectory(inputArray[1])) { //makedir nombre
+						if(_fileSystem.createDirectory(inputArray[1], false)) { //makedir nombre
 							System.out.println("Directory created");
 						} else {
-							System.out.println("Error creating directory");
+							System.out.println("Directory already exists, do you want to overwrite it? (y/n)");
+							String newInput = _input.nextLine();
+							String[] ehh = newInput.split("\\s+");
+							if(ehh[0].toLowerCase()=="y"){
+							  _fileSystem.createDirectory(inputArray[1], true);
+							  System.out.println("Directory created");
+							} else {
+							  System.out.println("Error creating directory");
+							}
 						}
 					} else {
 						System.out.println("Invalid parameter");
