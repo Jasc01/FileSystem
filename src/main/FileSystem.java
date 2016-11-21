@@ -110,7 +110,7 @@ public class FileSystem {
 	
 	private boolean addFileToDirectory(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines) {
 		File newFile = new File(pName, pExtension, pContent, pFileLines);
-		return searchDirectory(_currentDirectory).addFile(newFile);
+		return searchDirectory(_currentDirectory).addFile(newFile, false);
 	}
 	
 	public DirectoryTree searchDirectory(String pDirectoryToSearch) {
@@ -145,7 +145,7 @@ public class FileSystem {
 	
 	public boolean createDirectory(String pName) {
 		DirectoryTree newDirectory = new DirectoryTree(pName);
-		return searchDirectory(_currentDirectory).addDirectory(newDirectory);
+		return searchDirectory(_currentDirectory).addDirectory(newDirectory, false);
 	}
 	
 	public boolean changeDirectory(String pNewPath) { //NOTA: cuando escribe nombre///////nombre2 simplemente no lo permite
