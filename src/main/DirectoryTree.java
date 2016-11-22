@@ -120,7 +120,7 @@ public class DirectoryTree {
 	public void treeFileSystem (int depth) {
 		for (int i = 0; i < _directoryTree.size(); i++){
 			nTabs (depth);
-			System.out.println(_name);
+			System.out.println(_directoryTree.get(i).getName());
 			_directoryTree.get(i).treeFileSystem(depth+1);
 		}
 		for (int i = 0; i < _files.size(); i++){
