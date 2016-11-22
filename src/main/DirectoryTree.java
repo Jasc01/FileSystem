@@ -111,4 +111,22 @@ public class DirectoryTree {
 	public ArrayList<File> getFileList() {
 		return _files;
 	}
+	
+	
+	private void nTabs(int n){
+		for(int i =0; i < n; i++) { System.out.print("\t");	 }
+	}
+	
+	public void treeFileSystem (int depth) {
+		for (int i = 0; i < _directoryTree.size(); i++){
+			nTabs (depth);
+			System.out.println(_name);
+			_directoryTree.get(i).treeFileSystem(depth+1);
+		}
+		for (int i = 0; i < _files.size(); i++){
+			nTabs (depth);
+			System.out.println(_files.get(i).get_name()+"."+_files.get(i).get_extension());
+			
+		}	
+	}
 }

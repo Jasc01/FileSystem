@@ -419,4 +419,7 @@ public class FileSystem {
 		return false;
 	}
 	
+	public void treeFileSystem () {
+		_mainDirectory.treeFileSystem(0);
+	}
 }

@@ -158,6 +158,13 @@ public class MainGUI {
 			System.out.println("Invalid parameter");
 		}
 	}
+	public void tree (String[] pInputArray) {
+		if (pInputArray.length == 1) {
+			_fileSystem.treeFileSystem();
+		} else {
+			System.out.println("Unknown command");
+		}
+	}
 	
 	public void readCommand() {
 		boolean exit = false;
@@ -184,7 +191,8 @@ public class MainGUI {
 				case "modfile": 
 					// TODO Modificar un archivo que se encuentra en el directorio actual
 					break;
-				
+					
+				case "tree": tree(inputArray); break;
 				
 				case "exit":
 					if(inputArray.length == 1) {
