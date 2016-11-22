@@ -44,6 +44,44 @@ public class FileSystem {
 		}
 	}
 	
+	public boolean moveDirectory(String pDirectory, String pDestination){
+	  boolean directoryMoved = false;
+	  DirectoryTree directory = null;
+	  DirectoryTree origin = searchDirectory(_currentDirectory);
+	  DirectoryTree destination = searchDirectory(pDestination);
+	  for(DirectoryTree d : origin.getDirectoryList()){
+	    if(d.getName().equals(pDirectory)){
+	      directory = d;
+	      destination.addDirectory(directory, false);
+	      directoryMoved = true;
+	      break;
+	    }
+	  }
+	  if(directoryMoved){
+	    origin.removeDirectory(directory);
+	  }
+	  return directoryMoved;
+	}
+	
+	public boolean moveFile(String pFile, String pDestination){
+	  boolean fileMoved = false;
+	  File file = null;
+	  String[] fileData = pFile.split("\\.");
+	  DirectoryTree origin = searchDirectory(_currentDirectory);
+	  DirectoryTree destination = searchDirectory(pDestination);
+	  for(File f : origin.getFileList()){
+	    if(f.get_name().equals(fileData[0]) && f.get_extension().equals(fileData[1])){
+	      file = f;
+	      destination.addFile(file, false);
+	      fileMoved = true;
+	      break;
+	    }
+	  }
+	  if(fileMoved){
+	    origin.removeFile(file);
+	  }
+	  return fileMoved;
+	}
 	
 	//Falta probar
 	public boolean deleteDirectory(String pName){
