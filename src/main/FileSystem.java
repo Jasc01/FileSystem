@@ -310,13 +310,23 @@ public class FileSystem {
 		}
 	}
 	
-	public void modFile(String pFileName, String pNewContent) {
+	public boolean modFile(String pFileName, String pNewContent) {
 		//TODO modificar un archivo que esté en el directorio actual
 		// Buscar el File correspondiente
 		// Buscar la línea (o líneas) en la que tiene la data
 		// Borrar esas líneas
 		// Volver a escribir en el archivo con first fit
 		// Modificar (setFile) el File con lo nuevo
+		String[] nameArray = getFixedFileName(pFileName);
+		File fileTemp = searchFile(nameArray[0] + nameArray[1]);
+		if(fileTemp != null) {
+			if(createFile(nameArray[0], nameArray[1], pNewContent, true)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
 	}
 	
 	public boolean showProperties(String pFileName) {
