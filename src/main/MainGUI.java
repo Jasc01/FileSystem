@@ -36,7 +36,7 @@ public class MainGUI {
 	public String[] separeCommand (String pInput){
 		String[] inputArray = pInput.split("\\|+");
 		for (int i = 0; i < inputArray.length; i++){
-			System.out.println(inputArray[i]);
+			//System.out.println(inputArray[i]);
 		}
 		return inputArray;
 	}
@@ -158,6 +158,13 @@ public class MainGUI {
 			System.out.println("Invalid parameter");
 		}
 	}
+	public void find(String[] pInputArray) {
+		if (pInputArray.length == 2) {
+			_fileSystem.findFileOrDirectory(pInputArray[1]);;
+		} else {
+			System.out.println("Unknown command");
+		}
+	}
 	public void tree (String[] pInputArray) {
 		if (pInputArray.length == 1) {
 			_fileSystem.treeFileSystem();
@@ -191,7 +198,7 @@ public class MainGUI {
 				case "modfile": 
 					// TODO Modificar un archivo que se encuentra en el directorio actual
 					break;
-					
+				case "find": find(inputArray); break;
 				case "tree": tree(inputArray); break;
 				
 				case "exit":

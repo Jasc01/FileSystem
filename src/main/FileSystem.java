@@ -422,4 +422,17 @@ public class FileSystem {
 	public void treeFileSystem () {
 		_mainDirectory.treeFileSystem(0);
 	}
+	
+	public void findFileOrDirectory(String pName) {
+		String[] nameFixed = getFixedFileName(pName);
+		if(nameFixed != null) {
+			if(nameFixed[0].equals("*")) {
+				_mainDirectory.findFileOrDirectory(nameFixed[1], _mainDirectory.getName(), false, true);
+			} else {
+				_mainDirectory.findFileOrDirectory(nameFixed[0] + "." + nameFixed[1], _mainDirectory.getName(), false, false);
+			}
+		} else {
+			_mainDirectory.findFileOrDirectory(pName, _mainDirectory.getName(), true, false);
+		}
+	}
 }

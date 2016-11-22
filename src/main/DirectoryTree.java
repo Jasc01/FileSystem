@@ -4,15 +4,17 @@ import java.util.ArrayList;
 
 public class DirectoryTree {
 	
-	String _name;
+	private String _name;
+	private String _pathForFind;
 	
-	ArrayList<DirectoryTree> _directoryTree;
-	ArrayList<File> _files;
+	private ArrayList<DirectoryTree> _directoryTree;
+	private ArrayList<File> _files;
 	
 	public DirectoryTree(String pName) {
 		_name = pName;
 		_directoryTree = new ArrayList<>();
 		_files = new ArrayList<>();
+		_pathForFind = "";
 	}
 	
 	public void removeDirectory(DirectoryTree pDirectory){
@@ -128,5 +130,30 @@ public class DirectoryTree {
 			System.out.println(_files.get(i).get_name()+"."+_files.get(i).get_extension());
 			
 		}	
+	}
+	
+	public void findFileOrDirectory(String pName, String pCurrentName, boolean pKindOfSearch, boolean pSearchAll) {
+		_pathForFind = pCurrentName;
+		for (int i = 0; i < _directoryTree.size(); i++){
+			if(pKindOfSearch) {
+				if(_directoryTree.get(i).getName().toLowerCase().equals(pName.toLowerCase())) {
+					System.out.println(_pathForFind + "/" + _directoryTree.get(i).getName());
+				}
+			}
+			_directoryTree.get(i).findFileOrDirectory(pName, pCurrentName + "/" + _directoryTree.get(i).getName(), pKindOfSearch, pSearchAll);
+		}
+		if(!pKindOfSearch) {
+			for (int i = 0; i < _files.size(); i++){
+				if(!pSearchAll) {
+					if((_files.get(i).get_name()+"."+_files.get(i).get_extension()).toLowerCase().equals(pName.toLowerCase())) {
+						System.out.println(_pathForFind + "/" + _files.get(i).get_name()+"."+_files.get(i).get_extension());
+					}	
+				} else {
+					if(_files.get(i).get_extension().toLowerCase().equals(pName.toLowerCase())) {
+						System.out.println(_pathForFind + "/" + _files.get(i).get_name()+"."+_files.get(i).get_extension());
+					}
+				}
+			}	
+		}
 	}
 }
