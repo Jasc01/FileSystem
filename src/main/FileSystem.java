@@ -353,7 +353,7 @@ public class FileSystem {
 			if (path.equals("")) { path += strip[i];}
 			else {path += "/" + strip[i];}
 		}
-		System.out.println(path);
+		//System.out.println(path);
 		return path;
 	}
 	
@@ -477,25 +477,29 @@ public class FileSystem {
 		}
 		else {
 			System.out.println("Copying directory. How dare you.");
-			return false;
+			return copyallfiles(pRealPath);
 		}
 	}
 	
-	private void copyallfiles(java.io.File curDir){
+	private boolean copyallfiles(String pRealPath){
+		Path filep = Paths.get(pRealPath);
+		java.io.File curDir  = filep.toFile();
+		
 		java.io.File[] filesList = curDir.listFiles();
 	    for(java.io.File f : filesList){
 	    	if(f.isDirectory()){
-	    		//Crear directorio
-	    		//Moverme al directorio
-	    		copyallfiles(f);
-	    		//Volver al anterior
+	    		String previous = _currentDirectory;
+	    		createDirectory(f.getName(), false);
+	    		changeDirectory(f.getName());
+	    		copyallfiles(f.getAbsolutePath());
+	    		changeDirectory(previous);
 	    	}
 	    		
 	        if(f.isFile()){
-	        	//Copiar archivo
-	            System.out.println(f.getName());
+	        	copyrvfile(f.getAbsolutePath(),_currentDirectory);
 	        }
 	    }
+	    return true;
 	}
 	
 	private boolean copyrvfile (String pRealPath, String pVirtualDestination) {
@@ -596,8 +600,9 @@ public class FileSystem {
 		for (int i = 0; i < splitOPath.length-1; i++ ) {
 		  dirPath += splitOPath[i] + "/";
 		}
-		System.out.println(dirPath);
-		System.out.println(filename);
+		
+		//System.out.println(dirPath);
+		//System.out.println(filename);
 		
 	    return copyvvAux (dirPath,filename,destinyPath);
 	}
