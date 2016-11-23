@@ -346,12 +346,23 @@ public class FileSystem {
       return pPathSoFar;
     }
 	
+	private String nes (String path) {
+		String [] strip = path.split("\\/");
+		path = "";
+		for (int i = 0; i < strip.length; i++){
+			if (path.equals("")) { path += strip[i];}
+			else {path += "/" + strip[i];}
+		}
+		System.out.println(path);
+		return path;
+	}
+	
 	private String toAbsolute (String pCurrentDirectory, String pNewPath) {
 	    String[] dividedPath = pNewPath.split("\\/");
         if(dividedPath[0].toLowerCase().equals(_rootName.toLowerCase())) {
-            return relativeToAbsolute(pNewPath,"");
+            return nes(relativeToAbsolute(pNewPath,""));
         } else {
-            return relativeToAbsolute(_currentDirectory,pNewPath);
+            return nes(relativeToAbsolute(_currentDirectory,pNewPath));
         }
 	}
 	
