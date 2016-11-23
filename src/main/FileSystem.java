@@ -593,7 +593,12 @@ public class FileSystem {
 		}
 		for (int i = 0; i < cur.getFileList().size(); i++) {
 			try {
-				Files.createFile(Paths.get(pRealPath+"\\"+cur.getFileList().get(i).get_name()));
+				if (cur.getFileList().get(i).get_name().equals(_mainDirectory.getName())) {
+					System.out.println("Can't copy main directory! ");
+				}
+				else {
+					Files.createFile(Paths.get(pRealPath+"\\"+cur.getFileList().get(i).get_name()));
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
