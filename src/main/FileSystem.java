@@ -71,41 +71,31 @@ public class FileSystem {
 	  return false;
 	}
 	
+	private void recursiveClusterFuck(DirectoryTree pDirectory){
+	  for(int i = 0; i < pDirectory.getDirectoryList().size(); i++){
+	    recursiveClusterFuck(pDirectory.getDirectoryList().get(i));
+	  }
+	  deleteFiles(pDirectory.getName());
+	}
+	
 	//Falta probar
 	public boolean deleteDirectory(String pName){
-	  boolean directoryDeleted = false;
 	  DirectoryTree directory = searchDirectory(_currentDirectory);
 	  for(int i = 0; i < directory.getDirectoryList().size(); i++){
 	    DirectoryTree dt = directory.getDirectoryList().get(i);
 	    if(dt.getName().equals(pName)){
-
-          String dir = _currentDirectory;
-	      //Borrar Archivos locales
-	      ArrayList<String> files = new ArrayList<String>();
-	      for(File f : dt.getFileList()){
-	        files.add(f.get_name() + "." + f.get_extension());
-	      }
-	      dir = dir + "/" + dt.getName();
-	      deleteFiles(files, dir);
-	      
-	      //Borrar archivos internos
-	      ArrayList<String> files2;
+	      deleteFiles(dt.getName());
+          
 	      for(DirectoryTree idt : dt.getDirectoryList()){
-	        dir = dir + "/" + idt.getName();
-	        files2 = new ArrayList<String>();
-	        for(File f : idt.getFileList()){
-	          files2.add(f.get_name() + "." + f.get_extension());
-	        }
-	        deleteFiles(files2, dir);
+	        deleteFiles(idt.getName());
 	      }
 	      
-	      //Borrar directorios
+	      //Borrar directorio
 	      directory.removeDirectory(dt, true);
-	      directoryDeleted = true;
-	      break;
+	      return true;
 	    }
 	  }
-	  return directoryDeleted;
+	  return false;
 	}
 	
 	//Falta probar
@@ -153,6 +143,20 @@ public class FileSystem {
         System.out.println("Error");
       }
 	  return filesDeleted;
+	}
+	
+	//
+	public boolean deleteFiles(String pDirectory){
+	  String originalDir = _currentDirectory;
+	  _currentDirectory = pDirectory;
+	  File f;
+	  DirectoryTree directory = searchDirectory(pDirectory);
+	  while(directory.getFileList().size() > 0){
+	    f = directory.getFileList().get(0);
+	    deleteFile(f.get_name(), f.get_extension());
+	  }
+	  _currentDirectory = originalDir;
+	  return true;
 	}
 	
 	//Probado
