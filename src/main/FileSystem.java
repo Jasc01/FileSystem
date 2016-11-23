@@ -323,7 +323,7 @@ public class FileSystem {
       for (int i = 0; i < relativeArray.length; i++){
           
           if (relativeArray[i].equals("..")){
-              String[] splitPath = pPathSoFar.split("/");
+              String[] splitPath = pPathSoFar.split("\\/");
               pPathSoFar = ""; 
               
               if (!pPathSoFar.equals(_mainDirectory.getName())) {
@@ -347,7 +347,7 @@ public class FileSystem {
     }
 	
 	private String toAbsolute (String pCurrentDirectory, String pNewPath) {
-	    String[] dividedPath = pNewPath.split("/");
+	    String[] dividedPath = pNewPath.split("\\/");
         if(dividedPath[0].toLowerCase().equals(_rootName.toLowerCase())) {
             return relativeToAbsolute(pNewPath,"");
         } else {
@@ -495,7 +495,7 @@ public class FileSystem {
       String dirPath = ""; 
       String filename = splitOPath[splitOPath.length-1];
       for (int i = 0; i < splitOPath.length-1; i++ ) {
-        dirPath += "/" + splitOPath[i];
+        dirPath += splitOPath[i]  + "/";
       }
     
       return copyvrAux (dirPath,filename,pRealPath);
@@ -531,9 +531,11 @@ public class FileSystem {
 		String dirPath = ""; 
 		String filename = splitOPath[splitOPath.length-1];
 		for (int i = 0; i < splitOPath.length-1; i++ ) {
-		  dirPath += "/" + splitOPath[i];
+		  dirPath += splitOPath[i] + "/";
 		}
-	  
+		System.out.println(dirPath);
+		System.out.println(filename);
+		
 	    return copyvvAux (dirPath,filename,destinyPath);
 	}
 	
