@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.io.File;
 
 public class FileSystem {
 	
@@ -465,7 +466,6 @@ public class FileSystem {
 		return null;
 	}
 	
-	
 //Copy
 	private boolean fileOrFolder (String path){
 		return path.contains("."); 
@@ -477,21 +477,31 @@ public class FileSystem {
 		}
 		else {
 			System.out.println("Copying directory. How dare you.");
-			return copyallfiles(pRealPath);
+			String previous = _currentDirectory;
+			boolean ret = false;
+			if (changeDirectory(pVirtualDestination)) {
+				Path filep = Paths.get(pRealPath);
+				java.io.File curDir  = filep.toFile();
+				createDirectory(curDir.getName(), false);
+				changeDirectory(curDir.getName());;
+				ret = copyallfilesrv(pRealPath);
+				changeDirectory(previous);
+			}
+			return ret;
 		}
 	}
 	
-	private boolean copyallfiles(String pRealPath){
+	private boolean copyallfilesrv(String pRealPath){
 		Path filep = Paths.get(pRealPath);
-		java.io.File curDir  = filep.toFile();
 		
+		java.io.File curDir  = filep.toFile();
 		java.io.File[] filesList = curDir.listFiles();
 	    for(java.io.File f : filesList){
 	    	if(f.isDirectory()){
 	    		String previous = _currentDirectory;
 	    		createDirectory(f.getName(), false);
 	    		changeDirectory(f.getName());
-	    		copyallfiles(f.getAbsolutePath());
+	    		copyallfilesrv(f.getAbsolutePath());
 	    		changeDirectory(previous);
 	    	}
 	    		
@@ -535,15 +545,62 @@ public class FileSystem {
 			return false;
 		}
 	}
-//Virtual to real
+
+	
+	
+	
+	
+	//Virtual to real
 	public boolean copyVirtualToReal (String pVirtualPath, String pRealPath) { //Copies a real file into the virtual file in the current directory
 		if (fileOrFolder(pVirtualPath)) {
 			return copyvrfile(pVirtualPath, pRealPath);
 		}
 		else {
 			System.out.println("Copying directory. How dare you.");
-			return false;
+			String previous = _currentDirectory;
+			boolean ret = false;
+			if (changeDirectory(pVirtualPath)) { //Me ubico en el lugar que empiezo a copiar
+				DirectoryTree cur = searchDirectory(_currentDirectory);
+				
+				String folderName = pRealPath+"\\"+cur.getName();
+				File folder = new File( folderName );
+				folder.mkdirs();
+				 
+				ret = copyallfilesvr(folderName);
+				
+				//No need to close it again.
+				
+				changeDirectory(previous);
+				
+			}
+			return ret;
 		}
+	}
+	private boolean copyallfilesvr(String pRealPath) {
+		//Ya estoy en el lugar que quiero copiar
+		
+		DirectoryTree cur = searchDirectory(_currentDirectory);
+		for (int i = 0; i < cur.getDirectoryList().size(); i++) {
+			String folderName = pRealPath+"\\"+cur.getDirectoryList().get(i).getName();
+			File folder = new File( folderName );
+			folder.mkdirs();
+			
+			String previous = _currentDirectory;
+			changeDirectory(_currentDirectory+"/"+cur.getDirectoryList().get(i).getName());
+			copyallfilesvr(folderName);
+			changeDirectory(previous);
+			
+		}
+		for (int i = 0; i < cur.getFileList().size(); i++) {
+			try {
+				Files.createFile(Paths.get(pRealPath+"\\"+cur.getFileList().get(i).get_name()));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				return false;
+			}
+		}
+	    return true;
 	}
 	
 	private boolean copyvrfile(String pVirtualPath, String pRealPath){
