@@ -46,7 +46,7 @@ public class FileSystem {
 	
 	public boolean moveDirectory(String pDirectory, String pDestination){
 	  DirectoryTree origin = searchDirectory(_currentDirectory);
-	  DirectoryTree destination = searchDirectory(pDestination.toLowerCase());
+	  DirectoryTree destination = searchDirectory(toAbsolute(_currentDirectory,pDestination.toLowerCase()));
 	  for(DirectoryTree d : origin.getDirectoryList()){
 	    if(d.getName().toLowerCase().equals(pDirectory.toLowerCase())){
 	      DirectoryTree dt = new DirectoryTree(d.getName(), d.getDirectoryList(), d.getFileList());
@@ -432,7 +432,10 @@ public class FileSystem {
 	}
 
 	public boolean copyRealToVirtual (String pRealPath, String pVirtualDestination) { //Copies a real file into the virtual file in the current directory
-		Path filep = Paths.get(pRealPath);
+		String originalPlace = _currentDirectory;
+	    String finalDestination = toAbsolute(_currentDirectory, pVirtualDestination);
+	  
+	    Path filep = Paths.get(pRealPath);
 		try {
 			java.io.File file  = filep.toFile();
 			String filename = file.getName();
@@ -447,7 +450,13 @@ public class FileSystem {
 			for (int i = 0; i < contents.size(); i++) { allcontents += contents.get(i); }
 			
 			//System.out.println(finalfilename[0]+ " " + finalfilename[1] +" " +  allcontents);
-			return createFile(finalfilename[0], finalfilename[1], allcontents, false);
+			if (changeDirectory(finalDestination)) {
+			    if (createFile(finalfilename[0], finalfilename[1], allcontents, false)){
+			        changeDirectory(originalPlace);
+			        return true;
+			    }
+			}
+			return false;
 			
 		} catch (IOException e) {
 			//e.printStackTrace(); //Red flash error
