@@ -45,12 +45,19 @@ public class MainGUI {
 	public void help () {
 		System.out.println("\n\nHELP:");
 		System.out.println("file /name /extension /content  \t | Creates new file in the current directory");
-		System.out.println("makedir /name  \t\t\t | Creates new directory inside the current one");
+		System.out.println("makedir /name  \t\t\t\t | Creates new directory inside the current one");
 		System.out.println("cdir /path \t\t\t\t | Changes the current directory");
 		System.out.println("listdir \t\t\t\t | Lists the contents of the directory");
 		System.out.println("modfile /path \t\t\t\t | Modifies the contents of the file given the path");
 		System.out.println("showpro /path \t\t\t\t | Displays the properties of the file in the given path");
 		System.out.println("show /path \t\t\t\t | Displays the file in the given path");
+		System.out.println("copyrv /rpath /vpath \t\t\t | Copies a real file into the virtual path given");
+		System.out.println("copyvr /vpath /rpath \t\t\t | Copies a virtual file into the real path given");
+		System.out.println("copyvv /vpath /vpath \t\t\t | Copies a virtual file into the virtual path given");
+		System.out.println("move /filename|directory /path \t\t | Moves file to destination");
+		System.out.println("remove /filename+|directory \t\t | Removes the specified file");
+		System.out.println("find /filename|directory \t\t | Searches for a file with said name");
+		System.out.println("tree \t\t\t\t\t | Displays the directory tree");
 		System.out.println("exit \t\t\t\t\t | Ends the program\n\n");
 	}
 	public void file (String[] pInputArray) {
@@ -203,7 +210,7 @@ public class MainGUI {
 	}
 	public void find(String[] pInputArray) {
 		if (pInputArray.length == 2) {
-			//_fileSystem.findFileOrDirectory(pInputArray[1]);;
+			_fileSystem.findFileOrDirectory(pInputArray[1]);;
 		} else {
 			System.out.println("Unknown command");
 		}

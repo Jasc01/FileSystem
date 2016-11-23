@@ -466,19 +466,76 @@ public class FileSystem {
 	}
 	
 	public boolean copyVirtualToReal (String pVirtualPath, String pRealPath) { //Copies a real file into the virtual file in the current directory
-		return false;
+	  String originPath = toAbsolute(_currentDirectory,pVirtualPath.toLowerCase());
+    
+      String[] splitOPath = originPath.split("\\/");
+      String dirPath = ""; 
+      String filename = splitOPath[splitOPath.length-1];
+      for (int i = 0; i < splitOPath.length-1; i++ ) {
+        dirPath += "/" + splitOPath[i];
+      }
+    
+      return copyvrAux (dirPath,filename,pRealPath);
+	}
+	
+	private boolean copyvrAux (String pDirectoryPath, String pFileToCopy, String pRealPath){
+
+      DirectoryTree originFolder = searchDirectory(pDirectoryPath);
+      
+      if (originFolder == null) {return false;}
+      
+      for(File f : originFolder.getFileList()){
+          if(pFileToCopy.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
+              try{
+                  PrintWriter writer = new PrintWriter(pRealPath+"/"+f.get_name()+"."+f.get_extension(), "UTF-8");
+                  writer.println(f.get_content());
+                  writer.close();
+                  return true;
+              } catch (Exception e) {
+                  return false;
+              }
+          } 
+      }
+      return false;
 	}
 	
 	public boolean copyVirtualToVirtual (String pVirtualOrigin, String pVirtualDestination) { //Copies a real file into the virtual file in the current directory
-		return false;
+	    
+	    String originPath = toAbsolute(_currentDirectory,pVirtualOrigin.toLowerCase());
+        String destinyPath = toAbsolute(_currentDirectory,pVirtualDestination.toLowerCase());
+      
+        String[] splitOPath = originPath.split("\\/");
+		String dirPath = ""; 
+		String filename = splitOPath[splitOPath.length-1];
+		for (int i = 0; i < splitOPath.length-1; i++ ) {
+		  dirPath += "/" + splitOPath[i];
+		}
+	  
+	    return copyvvAux (dirPath,filename,destinyPath);
+	}
+	
+	private boolean copyvvAux (String pDirectoryPath, String pFileToCopy, String pDestinationPath) {
+	  
+      DirectoryTree originFolder = searchDirectory(pDirectoryPath);
+      
+      if (originFolder == null) {return false;}
+      
+      for(File f : originFolder.getFileList()){
+          if(pFileToCopy.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
+              if (changeDirectory(pDestinationPath)) {
+                  createFile(f.get_name(), f.get_extension(), f.get_content(), false);
+                  changeDirectory(pDirectoryPath);
+                  return true;
+              }
+          } 
+      }
+      return false;
 	}
 	
 	public void treeFileSystem () {
 		_mainDirectory.treeFileSystem(0);
 	}
 	
-
-	/*
 	public void findFileOrDirectory(String pName) {
 		String[] nameFixed = getFixedFileName(pName);
 		if(nameFixed != null) {
@@ -490,5 +547,5 @@ public class FileSystem {
 		} else {
 			_mainDirectory.findFileOrDirectory(pName, _mainDirectory.getName(), true, false);
 		}
-	}*/
+	}
 }
