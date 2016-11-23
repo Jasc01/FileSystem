@@ -114,14 +114,6 @@ public class DirectoryTree {
 		return _files;
 	}
 	
-	public String relativeToAbsolute (String pPathSoFar, String pCurrent) {
-		for (int i = 0; i < _directoryTree.size(); i++){
-			if (_directoryTree.get(i).getName() == pCurrent){ return pPathSoFar + pCurrent; }
-			else { relativeToAbsolute(pPathSoFar + _directoryTree.get(i).getName(), pCurrent); }
-		}
-		return "failed";
-	}
-	
 	private void nTabs(int n){
 		for(int i =0; i < n; i++) { System.out.print("\t");	 }
 	}

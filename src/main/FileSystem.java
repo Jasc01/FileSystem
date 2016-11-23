@@ -237,6 +237,7 @@ public class FileSystem {
 		return searchDirectory(_currentDirectory).addFile(newFile, pOverwrite);
 	}
 	
+	
 	public DirectoryTree searchDirectory(String pDirectoryToSearch) {
 		String[] directoriesArray = pDirectoryToSearch.split("/");
 		DirectoryTree directoryToReturn = null;
@@ -272,7 +273,43 @@ public class FileSystem {
 		
 		return searchDirectory(_currentDirectory).addDirectory(newDirectory, pOverwrite);
 	}
-	
+	private String relativeToAbsolute (String pPathSoFar, String pCurrent) { //Convierte un path relativo en uno absoluto
+      //El pPathSoFar siempre es absoluto. 
+    
+      String[] relativeArray = pCurrent.split("\\/");
+      System.out.println("Actual: " + pPathSoFar);
+      System.out.println("Relativo: " + pCurrent);
+      
+      for(int i = 0; i <relativeArray.length; i++) {
+          System.out.println(relativeArray[i]);
+      }
+      for (int i = 0; i < relativeArray.length; i++){
+          System.out.println(pPathSoFar);
+          System.out.println("Procesando: " + relativeArray[i]);
+          
+          if (relativeArray[i].equals("..")){
+              String[] splitPath = pPathSoFar.split("/");
+              pPathSoFar = ""; 
+              System.out.println("Retrocediendo");
+              if (!pPathSoFar.equals(_mainDirectory.getName())) {
+                  for (int j = 0; j<splitPath.length-1; j++){ //-1 para que retroceda en el path 
+                      if (pPathSoFar.equals("")){
+                        pPathSoFar += splitPath[j];
+                      } else{
+                        pPathSoFar += "/" + splitPath[j];
+                      }   
+                  }
+              }
+          }
+          else {
+              if (!relativeArray[i].equals(".")){ 
+                  pPathSoFar += "/" + relativeArray[i];
+              }
+          }
+          
+      }
+      return pPathSoFar;
+    }
 	public boolean changeDirectory(String pNewPath) { //NOTA: cuando escribe nombre///////nombre2 simplemente no lo permite
 		String[] dividedPath = pNewPath.split("/");
 		if(dividedPath[0].toLowerCase().equals(_rootName.toLowerCase())) {
@@ -282,7 +319,7 @@ public class FileSystem {
 				return true;
 			}
 		} else {
-			String pathToSearch = _currentDirectory + "/" + pNewPath;
+			String pathToSearch = relativeToAbsolute(_currentDirectory,pNewPath);
 			//Buscar path relativo
 			if(searchDirectory(pathToSearch) != null) {
 				_currentDirectory = pathToSearch.toLowerCase();
@@ -424,9 +461,7 @@ public class FileSystem {
 		_mainDirectory.treeFileSystem(0);
 	}
 	
-	public String relativeToAbsolute (String pInputPath) {
-		return _mainDirectory.relativeToAbsolute("root:/",pInputPath);
-	}
+
 	/*
 	public void findFileOrDirectory(String pName) {
 		String[] nameFixed = getFixedFileName(pName);
