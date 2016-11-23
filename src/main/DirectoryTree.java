@@ -46,7 +46,7 @@ public class DirectoryTree {
 	  File f;
 	  for(int i = 0; i < _files.size(); i++){
 	    f = _files.get(i);
-	    if(f.get_name().equals(pFile.get_name()) && f.get_extension().equals(pFile.get_extension())){
+	    if(f.get_name().toLowerCase().equals(pFile.get_name().toLowerCase()) && f.get_extension().toLowerCase().equals(pFile.get_extension().toLowerCase())){
 	      _files.remove(i);
 	      break;
 	    }

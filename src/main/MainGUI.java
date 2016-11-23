@@ -167,16 +167,21 @@ public class MainGUI {
 		}
 	}
 	public void move(String[] pInputArray){
-	  if (pInputArray.length == 3) {
+	  if (pInputArray.length >= 3) {
+        String newName = "";
+        if(pInputArray.length == 4){
+          newName = pInputArray[3];
+        }
 	    String[] name = pInputArray[1].split("\\.");
 	    if (name.length == 1) {//Move directory
-	      if (_fileSystem.moveDirectory(pInputArray[1], pInputArray[2])) {
+	      if (_fileSystem.moveDirectory(pInputArray[1], pInputArray[2], newName)) {
 	        System.out.println("Directory moved");
 	      } else {
 	        System.out.println("Error moving directory");
 	      }
 	    } else {//Move file
-	      if (_fileSystem.moveFile(pInputArray[1], pInputArray[2])) {
+	      System.out.println(newName);
+	      if (_fileSystem.moveFile(pInputArray[1], pInputArray[2], newName)) {
 	        System.out.println("File moved");
 	      } else {
 	        System.out.println("Error moving file");

@@ -30,6 +30,19 @@ public class File {
 		
 		_fileLines = pFileLines;
 	}
+	public File(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines, String pDate){
+	    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+	    
+	    _name = pName;
+        _content = pContent;
+        _extension = pExtension;
+        _size = pContent.length();
+        _creationDate = pDate;
+        _modificationDate = dateFormat.format(date);
+        
+        _fileLines = pFileLines;
+	}
 
 	public String get_name() {
 		return _name;

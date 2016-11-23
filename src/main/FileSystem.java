@@ -44,12 +44,20 @@ public class FileSystem {
 		}
 	}
 	
-	public boolean moveDirectory(String pDirectory, String pDestination){
+	public boolean moveDirectory(String pDirectory, String pDestination, String pNewName){
 	  DirectoryTree origin = searchDirectory(_currentDirectory);
 	  DirectoryTree destination = searchDirectory(toAbsolute(_currentDirectory,pDestination.toLowerCase()));
+	  if(destination == null || origin == null){
+        return false;
+      }
 	  for(DirectoryTree d : origin.getDirectoryList()){
 	    if(d.getName().toLowerCase().equals(pDirectory.toLowerCase())){
-	      DirectoryTree dt = new DirectoryTree(d.getName(), d.getDirectoryList(), d.getFileList());
+	      DirectoryTree dt;
+	      if(pNewName.equals("")){
+	        dt = new DirectoryTree(d.getName(), d.getDirectoryList(), d.getFileList());
+          } else {
+            dt = new DirectoryTree(pNewName, d.getDirectoryList(), d.getFileList());
+          }
 	      destination.addDirectory(dt, false);
 	      origin.removeDirectory(d, false);
   	      return true;
@@ -58,12 +66,21 @@ public class FileSystem {
 	  return false;
 	}
 	
-	public boolean moveFile(String pFile, String pDestination){
+	public boolean moveFile(String pFile, String pDestination, String pNewName){
 	  DirectoryTree origin = searchDirectory(_currentDirectory);
 	  DirectoryTree destination = searchDirectory(toAbsolute(_currentDirectory,pDestination.toLowerCase()));
+	  if(destination == null || origin == null){
+	    return false;
+	  }
 	  for(File f : origin.getFileList()){
 	    if(pFile.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
-	      destination.addFile(f, false);
+	      File nf;
+	      if(pNewName.equals("")){
+	        nf = new File(f.get_name(), f.get_extension(), f.get_content(), f.get_fileLines(), f.get_creationDate());
+	      } else {
+	        nf = new File(pNewName, f.get_extension(), f.get_content(), f.get_fileLines(), f.get_creationDate());
+	      }
+	      destination.addFile(nf, false);
 	      origin.removeFile(f);
 	      return true;
 	    }
@@ -76,6 +93,9 @@ public class FileSystem {
       _currentDirectory = pDirectory.toLowerCase();
       File f;
       DirectoryTree directory = searchDirectory(pDirectory);
+      if(directory == null){
+        return false;
+      }
       while(directory.getFileList().size() > 0){
         f = directory.getFileList().get(0);
         deleteFile(f.get_name().toLowerCase(), f.get_extension().toLowerCase());
@@ -95,6 +115,9 @@ public class FileSystem {
 	
 	public boolean deleteDirectory(String pName){
 	  DirectoryTree directory = searchDirectory(_currentDirectory);
+	  if(directory == null){
+        return false;
+      }
 	  for(int i = 0; i < directory.getDirectoryList().size(); i++){
 	    DirectoryTree dt = directory.getDirectoryList().get(i);
 	    if(dt.getName().toLowerCase().equals(pName.toLowerCase())){
@@ -157,6 +180,9 @@ public class FileSystem {
 	  try{
 	    fileContent = new ArrayList<>(Files.readAllLines(FILE_PATH, StandardCharsets.UTF_8));
 	    DirectoryTree directory = searchDirectory(_currentDirectory);
+	    if(directory == null){
+	      return false;
+	    }
 	    for(int i = 0; i < directory.getFileList().size(); i++){
 	      File file = directory.getFileList().get(i);
 	      if(file.get_name().toLowerCase().equals(pName.toLowerCase()) &&
@@ -283,7 +309,9 @@ public class FileSystem {
 	
 	public boolean createDirectory(String pName, boolean pOverwrite) {
 		DirectoryTree newDirectory = new DirectoryTree(pName);
-		
+		if(pOverwrite){
+		  deleteDirectory(newDirectory.getName().toLowerCase());
+		}
 		return searchDirectory(_currentDirectory).addDirectory(newDirectory, pOverwrite);
 	}
 	
