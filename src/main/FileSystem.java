@@ -45,78 +45,92 @@ public class FileSystem {
 	}
 	
 	public boolean moveDirectory(String pDirectory, String pDestination){
-	  boolean directoryMoved = false;
-	  DirectoryTree directory = null;
 	  DirectoryTree origin = searchDirectory(_currentDirectory);
-	  DirectoryTree destination = searchDirectory(pDestination);
+	  DirectoryTree destination = searchDirectory(pDestination.toLowerCase());
 	  for(DirectoryTree d : origin.getDirectoryList()){
-	    if(d.getName().equals(pDirectory)){
-	      directory = d;
-	      destination.addDirectory(directory, false);
-	      directoryMoved = true;
-	      break;
+	    if(d.getName().toLowerCase().equals(pDirectory.toLowerCase())){
+	      DirectoryTree dt = new DirectoryTree(d.getName(), d.getDirectoryList(), d.getFileList());
+	      destination.addDirectory(dt, false);
+	      origin.removeDirectory(d, false);
+  	      return true;
 	    }
 	  }
-	  if(directoryMoved){
-	    origin.removeDirectory(directory);
-	  }
-	  return directoryMoved;
+	  return false;
 	}
 	
 	public boolean moveFile(String pFile, String pDestination){
-	  boolean fileMoved = false;
-	  File file = null;
-	  String[] fileData = pFile.split("\\.");
 	  DirectoryTree origin = searchDirectory(_currentDirectory);
-	  DirectoryTree destination = searchDirectory(pDestination);
+	  DirectoryTree destination = searchDirectory(pDestination.toLowerCase());
 	  for(File f : origin.getFileList()){
-	    if(f.get_name().equals(fileData[0]) && f.get_extension().equals(fileData[1])){
-	      file = f;
-	      destination.addFile(file, false);
-	      fileMoved = true;
-	      break;
+	    if(pFile.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
+	      destination.addFile(f, false);
+	      origin.removeFile(f);
+	      return true;
 	    }
 	  }
-	  if(fileMoved){
-	    origin.removeFile(file);
+	  return false;
+	}
+
+	public boolean deleteFiles(String pDirectory){
+      String originalDir = _currentDirectory;
+      _currentDirectory = pDirectory.toLowerCase();
+      File f;
+      DirectoryTree directory = searchDirectory(pDirectory);
+      while(directory.getFileList().size() > 0){
+        f = directory.getFileList().get(0);
+        deleteFile(f.get_name().toLowerCase(), f.get_extension().toLowerCase());
+      }
+      _currentDirectory = originalDir;
+      return true;
+    }
+
+    private void recursiveDelete(DirectoryTree pDirectory, String pathSoFar){
+	  DirectoryTree dt;
+	  for(int i = 0; i < pDirectory.getDirectoryList().size(); i++){
+	    dt = pDirectory.getDirectoryList().get(i);
+	    recursiveDelete(dt, pathSoFar + "/" + dt.getName().toLowerCase());
 	  }
-	  return fileMoved;
+	  deleteFiles(pathSoFar.toLowerCase());
 	}
 	
-	//Falta probar
 	public boolean deleteDirectory(String pName){
-	  boolean directoryDeleted = false;
 	  DirectoryTree directory = searchDirectory(_currentDirectory);
 	  for(int i = 0; i < directory.getDirectoryList().size(); i++){
 	    DirectoryTree dt = directory.getDirectoryList().get(i);
-	    if(dt.getName().equals(pName)){
-	      directory.removeDirectory(dt);
-	      directoryDeleted = true;
-	      break;
+	    if(dt.getName().toLowerCase().equals(pName.toLowerCase())){
+	      recursiveDelete(dt, _currentDirectory + "/" + dt.getName().toLowerCase());
+	      directory.removeDirectory(dt, true);
+	      return true;
 	    }
 	  }
-	  return directoryDeleted;
+	  return false;
 	}
 	
-	//Falta probar
 	public boolean deleteFiles(ArrayList<String> pFiles){
 	  boolean filesDeleted = false;
+	  int counter = 0;
 	  ArrayList<File> files = new ArrayList<>();
-	  DirectoryTree directory = searchDirectory(_currentDirectory);
-	  
+	  DirectoryTree directory;
+	  directory = searchDirectory(_currentDirectory);
 	  Path FILE_PATH = Paths.get(_virtualDiskName);
       ArrayList<String> fileContent;
-      
       try{
         fileContent = new ArrayList<>(Files.readAllLines(FILE_PATH, StandardCharsets.UTF_8));
         
         for(int i = 0; i < directory.getFileList().size(); i++){
           File f = directory.getFileList().get(i);
           String name = f.get_name() + "." + f.get_extension();
-          if(pFiles.contains(name)){
+          String nameL = f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase();
+          if(pFiles.contains(name) || pFiles.contains(nameL)){
             files.add(f);
-            deleteFile(f.get_name(), f.get_extension());
+            if(deleteFile(f.get_name().toLowerCase(), f.get_extension().toLowerCase())){
+              counter++;
+              i--;
+            }
           }
+        }
+        if(counter == pFiles.size()){
+          filesDeleted = true;
         }
         if(!filesDeleted){
           System.out.println("Error deleting files, reverting...");
@@ -130,8 +144,7 @@ public class FileSystem {
       }
 	  return filesDeleted;
 	}
-	
-	//Probado
+
 	public boolean deleteFile(String pName, String pExtension){
 	  boolean fileDeleted = false;
 	  
@@ -146,7 +159,8 @@ public class FileSystem {
 	    DirectoryTree directory = searchDirectory(_currentDirectory);
 	    for(int i = 0; i < directory.getFileList().size(); i++){
 	      File file = directory.getFileList().get(i);
-	      if(file.get_name().equals(pName) && file.get_extension().equals(pExtension)){
+	      if(file.get_name().toLowerCase().equals(pName.toLowerCase()) &&
+	          file.get_extension().toLowerCase().equals(pExtension.toLowerCase())){
 	        ArrayList<Integer> pos = file.get_fileLines();
 	        for(Integer j : pos){
 	          fileContent.set(j, emptyString);
@@ -236,8 +250,7 @@ public class FileSystem {
 		File newFile = new File(pName, pExtension, pContent, pFileLines);
 		return searchDirectory(_currentDirectory).addFile(newFile, pOverwrite);
 	}
-	
-	
+		
 	public DirectoryTree searchDirectory(String pDirectoryToSearch) {
 		String[] directoriesArray = pDirectoryToSearch.split("/");
 		DirectoryTree directoryToReturn = null;
@@ -273,6 +286,7 @@ public class FileSystem {
 		
 		return searchDirectory(_currentDirectory).addDirectory(newDirectory, pOverwrite);
 	}
+	
 	private String relativeToAbsolute (String pPathSoFar, String pCurrent) { //Convierte un path relativo en uno absoluto
       //El pPathSoFar siempre es absoluto. 
     
@@ -310,6 +324,7 @@ public class FileSystem {
       }
       return pPathSoFar;
     }
+	
 	public boolean changeDirectory(String pNewPath) { //NOTA: cuando escribe nombre///////nombre2 simplemente no lo permite
 		String[] dividedPath = pNewPath.split("/");
 		if(dividedPath[0].toLowerCase().equals(_rootName.toLowerCase())) {
