@@ -14,19 +14,24 @@ public class DirectoryTree {
 		_directoryTree = new ArrayList<>();
 		_files = new ArrayList<>();
 	}
+	public DirectoryTree(String pName, ArrayList<DirectoryTree> pDirectories, ArrayList<File> pFiles){
+	  _name = pName;
+	  _directoryTree = pDirectories;
+	  _files = pFiles;
+	}
 	
-	public void removeDirectory(DirectoryTree pDirectory){
+	public void removeDirectory(DirectoryTree pDirectory, boolean pPurge){
 	  DirectoryTree dt;
 	  for(int i = 0; i < _directoryTree.size(); i++){
 	     dt = _directoryTree.get(i);
 	     if(dt.getName().equals(pDirectory.getName())){
 	       //Borrar archivos
-	       while(dt.getFileList().size() > 0){
+	       while(dt.getFileList().size() > 0 && pPurge){
 	         dt.removeFile(dt.getFileList().get(0));
 	       }
 	       //Borrar directorios recursivamente
-	       while(dt.getDirectoryList().size() > 0){
-	         dt.removeDirectory(dt.getDirectoryList().get(0));
+	       while(dt.getDirectoryList().size() > 0 && pPurge){
+	         dt.removeDirectory(dt.getDirectoryList().get(0), true);
 	       }
 	       
 	       _directoryTree.remove(i);
@@ -58,7 +63,7 @@ public class DirectoryTree {
 			return true;
 		} else {
 		  if (pOverwrite){
-		    removeDirectory(pNewDirectory);
+		    removeDirectory(pNewDirectory, false);
 		    _directoryTree.add(pNewDirectory);
 		    return true;
 		  } else {

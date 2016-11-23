@@ -45,42 +45,30 @@ public class FileSystem {
 	}
 	
 	public boolean moveDirectory(String pDirectory, String pDestination){
-	  boolean directoryMoved = false;
-	  DirectoryTree directory = null;
 	  DirectoryTree origin = searchDirectory(_currentDirectory);
 	  DirectoryTree destination = searchDirectory(pDestination);
 	  for(DirectoryTree d : origin.getDirectoryList()){
-	    if(d.getName().equals(pDirectory)){
-	      directory = d;
-	      destination.addDirectory(directory, false);
-	      directoryMoved = true;
-	      break;
+	    if(d.getName().toLowerCase().equals(pDirectory.toLowerCase())){
+	      DirectoryTree dt = new DirectoryTree(d.getName(), d.getDirectoryList(), d.getFileList());
+	      destination.addDirectory(dt, false);
+	      origin.removeDirectory(d, false);
+  	      return true;
 	    }
 	  }
-	  if(directoryMoved){
-	    origin.removeDirectory(directory);
-	  }
-	  return directoryMoved;
+	  return false;
 	}
 	
 	public boolean moveFile(String pFile, String pDestination){
-	  boolean fileMoved = false;
-	  File file = null;
-	  String[] fileData = pFile.split("\\.");
 	  DirectoryTree origin = searchDirectory(_currentDirectory);
 	  DirectoryTree destination = searchDirectory(pDestination);
 	  for(File f : origin.getFileList()){
-	    if(f.get_name().equals(fileData[0]) && f.get_extension().equals(fileData[1])){
-	      file = f;
-	      destination.addFile(file, false);
-	      fileMoved = true;
-	      break;
+	    if(pFile.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
+	      destination.addFile(f, false);
+	      origin.removeFile(f);
+	      return true;
 	    }
 	  }
-	  if(fileMoved){
-	    origin.removeFile(file);
-	  }
-	  return fileMoved;
+	  return false;
 	}
 	
 	//Falta probar
@@ -90,7 +78,29 @@ public class FileSystem {
 	  for(int i = 0; i < directory.getDirectoryList().size(); i++){
 	    DirectoryTree dt = directory.getDirectoryList().get(i);
 	    if(dt.getName().equals(pName)){
-	      directory.removeDirectory(dt);
+
+          String dir = _currentDirectory;
+	      //Borrar Archivos locales
+	      ArrayList<String> files = new ArrayList<String>();
+	      for(File f : dt.getFileList()){
+	        files.add(f.get_name() + "." + f.get_extension());
+	      }
+	      dir = dir + "/" + dt.getName();
+	      deleteFiles(files, dir);
+	      
+	      //Borrar archivos internos
+	      ArrayList<String> files2;
+	      for(DirectoryTree idt : dt.getDirectoryList()){
+	        dir = dir + "/" + idt.getName();
+	        files2 = new ArrayList<String>();
+	        for(File f : idt.getFileList()){
+	          files2.add(f.get_name() + "." + f.get_extension());
+	        }
+	        deleteFiles(files2, dir);
+	      }
+	      
+	      //Borrar directorios
+	      directory.removeDirectory(dt, true);
 	      directoryDeleted = true;
 	      break;
 	    }
@@ -99,11 +109,19 @@ public class FileSystem {
 	}
 	
 	//Falta probar
-	public boolean deleteFiles(ArrayList<String> pFiles){
+	public boolean deleteFiles(ArrayList<String> pFiles, String pDirectory){
+	  System.out.println(pDirectory);
+	  System.out.println(pFiles.size());
 	  boolean filesDeleted = false;
+	  int counter = 0;
 	  ArrayList<File> files = new ArrayList<>();
-	  DirectoryTree directory = searchDirectory(_currentDirectory);
-	  
+	  DirectoryTree directory;
+	  if(pDirectory.equals("")){
+	    directory = searchDirectory(_currentDirectory);
+	  } else {
+	    directory = searchDirectory(pDirectory);
+	  }
+	  System.out.println(directory.getName());
 	  Path FILE_PATH = Paths.get(_virtualDiskName);
       ArrayList<String> fileContent;
       
@@ -115,8 +133,14 @@ public class FileSystem {
           String name = f.get_name() + "." + f.get_extension();
           if(pFiles.contains(name)){
             files.add(f);
-            deleteFile(f.get_name(), f.get_extension());
+            if(deleteFile(f.get_name(), f.get_extension())){
+              counter++;
+              i--;
+            }
           }
+        }
+        if(counter == pFiles.size()){
+          filesDeleted = true;
         }
         if(!filesDeleted){
           System.out.println("Error deleting files, reverting...");

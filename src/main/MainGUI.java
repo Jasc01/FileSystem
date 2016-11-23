@@ -1,5 +1,6 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainGUI {
@@ -158,6 +159,46 @@ public class MainGUI {
 			System.out.println("Invalid parameter");
 		}
 	}
+	public void move(String[] pInputArray){
+	  if (pInputArray.length == 3) {
+	    String[] name = pInputArray[1].split("\\.");
+	    if (name.length == 1) {//Move directory
+	      if (_fileSystem.moveDirectory(pInputArray[1], pInputArray[2])) {
+	        System.out.println("Directory moved");
+	      } else {
+	        System.out.println("Error moving directory");
+	      }
+	    } else {//Move file
+	      if (_fileSystem.moveFile(pInputArray[1], pInputArray[2])) {
+	        System.out.println("File moved");
+	      } else {
+	        System.out.println("Error moving file");
+	      }
+	    }
+	  } else {
+	    System.out.println("Invalid parameter");
+	  }
+	}
+	public void remove(String[] pInputArray){
+	  String[] name = pInputArray[1].split("\\.");
+	  if(name.length == 1){//Remove directory
+	    if (_fileSystem.deleteDirectory(pInputArray[1])) {
+	      System.out.println("Directory removed");
+	    } else {
+	      System.out.println("Error removing directory");
+	    }
+	  } else {//Remove file(s)
+	    ArrayList<String> files = new ArrayList<>();
+	    for(int i = 1; i < pInputArray.length; i++){
+	      files.add(pInputArray[i]);
+        }
+	    if (_fileSystem.deleteFiles(files, "")) {
+	      System.out.println("File(s) removed");
+	    } else {
+	      System.err.println("Error removing file(s)");
+	    }
+	  }
+	}
 	
 	public void readCommand() {
 		boolean exit = false;
@@ -180,6 +221,8 @@ public class MainGUI {
 				case "copyrv": copyrv(inputArray); break;
 				case "copyvr": copyvr(inputArray); break;
 				case "copyvv": copyvv(inputArray); break;
+				case "move": move(inputArray); break;
+				case "remove": remove(inputArray); break;
 				
 				case "modfile": 
 					// TODO Modificar un archivo que se encuentra en el directorio actual
