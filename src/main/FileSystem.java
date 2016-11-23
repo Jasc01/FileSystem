@@ -647,9 +647,43 @@ public class FileSystem {
 			return copyvvfile(pVirtualOrigin, pVirtualDestination);
 		}
 		else {
-			System.out.println("Copying directory. How dare you.");
-			return false;
+			return copyvvDir(pVirtualOrigin, pVirtualDestination);
 		}
+	}
+	
+	private boolean copyvvDir(String pVirtualOrigin, String pVirtualDestination) {
+		String originPath = toAbsolute(_currentDirectory,pVirtualOrigin.toLowerCase());
+        String destinyPath = toAbsolute(_currentDirectory,pVirtualDestination.toLowerCase());
+        
+        String[] splitOPathOrigin = originPath.split("\\/");
+        String[] splitOPathDestiny = destinyPath.split("\\/");
+        String dirPathOrigin = "";
+        String dirPathDestiny = "";
+		for (int i = 0; i < splitOPathOrigin.length; i++ ) { dirPathOrigin += splitOPathOrigin[i] + "/"; }
+		for (int i = 0; i < splitOPathDestiny.length; i++ ) { dirPathDestiny += splitOPathDestiny[i] + "/"; }
+		DirectoryTree directoryOrigin = searchDirectory(dirPathOrigin);
+		DirectoryTree directoryDestiny = searchDirectory(dirPathDestiny);
+		if(directoryOrigin != null && directoryDestiny != null) {
+			//Copiar Directorios
+			String originalDir = _currentDirectory;
+			changeDirectory(dirPathDestiny);
+			createDirectory(directoryOrigin.getName(), false);
+			changeDirectory(originalDir);
+			for(int i = 0; i < directoryOrigin.getDirectoryList().size(); i++) {
+				if(copyvvDir(dirPathOrigin + directoryOrigin.getDirectoryList().get(i).getName(), dirPathDestiny + directoryOrigin.getName())) { }
+				else {
+					System.out.println("Error while copying directory");
+				}
+			}
+			for(int i = 0; i < directoryOrigin.getFileList().size(); i++) {
+				if(copyvvfile(dirPathOrigin + directoryOrigin.getFileList().get(i).get_name() + "." + directoryOrigin.getFileList().get(i).get_extension(), dirPathDestiny + directoryOrigin.getName())) { }
+				else {
+					System.out.println("Error while copying file");
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	private boolean copyvvfile(String pVirtualOrigin, String pVirtualDestination){
