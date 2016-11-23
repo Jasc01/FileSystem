@@ -8,7 +8,7 @@ public class DirectoryTree {
 	private String _pathForFind;
 	
 	private ArrayList<DirectoryTree> _directoryTree;
-	private ArrayList<File> _files;
+	private ArrayList<MyFile> _files;
 	
 	public DirectoryTree(String pName) {
 		_name = pName;
@@ -16,7 +16,7 @@ public class DirectoryTree {
 		_files = new ArrayList<>();
 		_pathForFind = "";
 	}
-	public DirectoryTree(String pName, ArrayList<DirectoryTree> pDirectories, ArrayList<File> pFiles){
+	public DirectoryTree(String pName, ArrayList<DirectoryTree> pDirectories, ArrayList<MyFile> pFiles){
 	  _name = pName;
 	  _directoryTree = pDirectories;
 	  _files = pFiles;
@@ -42,8 +42,8 @@ public class DirectoryTree {
 	  }
 	}
 	
-	public void removeFile(File pFile){
-	  File f;
+	public void removeFile(MyFile pFile){
+	  MyFile f;
 	  for(int i = 0; i < _files.size(); i++){
 	    f = _files.get(i);
 	    if(f.get_name().toLowerCase().equals(pFile.get_name().toLowerCase()) && f.get_extension().toLowerCase().equals(pFile.get_extension().toLowerCase())){
@@ -74,10 +74,10 @@ public class DirectoryTree {
 		}
 	}
 	
-	public boolean addFile(File pNewFile, boolean pOverwrite) {
+	public boolean addFile(MyFile pNewFile, boolean pOverwrite) {
 		String mergedName = pNewFile.get_name() + "." + pNewFile.get_extension();
 		boolean alreadyIs = false;
-		for(File file : _files) {
+		for(MyFile file : _files) {
 			String tempString = file.get_name() + "." + file.get_extension();
 			if(mergedName.equals(tempString)) {
 				alreadyIs = true;
@@ -115,7 +115,7 @@ public class DirectoryTree {
 		return _directoryTree;
 	}
 	
-	public ArrayList<File> getFileList() {
+	public ArrayList<MyFile> getFileList() {
 		return _files;
 	}
 	

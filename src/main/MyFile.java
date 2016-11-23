@@ -7,7 +7,7 @@ import java.util.Date;
 
 
 //TODO Falta crear el método para modificar el archivo, en el cual también hay que modificar la variable _midificationDate
-public class File {
+public class MyFile {
 	String _name;
 	String _extension;
 	String _content;
@@ -17,7 +17,7 @@ public class File {
 	
 	ArrayList<Integer> _fileLines;
 	
-	public File(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines) {
+	public MyFile(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		
@@ -30,7 +30,7 @@ public class File {
 		
 		_fileLines = pFileLines;
 	}
-	public File(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines, String pDate){
+	public MyFile(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines, String pDate){
 	    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
 	    

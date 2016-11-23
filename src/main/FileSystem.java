@@ -72,13 +72,13 @@ public class FileSystem {
 	  if(destination == null || origin == null){
 	    return false;
 	  }
-	  for(File f : origin.getFileList()){
+	  for(MyFile f : origin.getFileList()){
 	    if(pFile.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
-	      File nf;
+	      MyFile nf;
 	      if(pNewName.equals("")){
-	        nf = new File(f.get_name(), f.get_extension(), f.get_content(), f.get_fileLines(), f.get_creationDate());
+	        nf = new MyFile(f.get_name(), f.get_extension(), f.get_content(), f.get_fileLines(), f.get_creationDate());
 	      } else {
-	        nf = new File(pNewName, f.get_extension(), f.get_content(), f.get_fileLines(), f.get_creationDate());
+	        nf = new MyFile(pNewName, f.get_extension(), f.get_content(), f.get_fileLines(), f.get_creationDate());
 	      }
 	      destination.addFile(nf, false);
 	      origin.removeFile(f);
@@ -91,7 +91,7 @@ public class FileSystem {
 	public boolean deleteFiles(String pDirectory){
       String originalDir = _currentDirectory;
       _currentDirectory = pDirectory.toLowerCase();
-      File f;
+      MyFile f;
       DirectoryTree directory = searchDirectory(pDirectory);
       if(directory == null){
         return false;
@@ -132,7 +132,7 @@ public class FileSystem {
 	public boolean deleteFiles(ArrayList<String> pFiles){
 	  boolean filesDeleted = false;
 	  int counter = 0;
-	  ArrayList<File> files = new ArrayList<>();
+	  ArrayList<MyFile> files = new ArrayList<>();
 	  DirectoryTree directory;
 	  directory = searchDirectory(_currentDirectory);
 	  Path FILE_PATH = Paths.get(_virtualDiskName);
@@ -141,7 +141,7 @@ public class FileSystem {
         fileContent = new ArrayList<>(Files.readAllLines(FILE_PATH, StandardCharsets.UTF_8));
         
         for(int i = 0; i < directory.getFileList().size(); i++){
-          File f = directory.getFileList().get(i);
+          MyFile f = directory.getFileList().get(i);
           String name = f.get_name() + "." + f.get_extension();
           String nameL = f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase();
           if(pFiles.contains(name) || pFiles.contains(nameL)){
@@ -157,7 +157,7 @@ public class FileSystem {
         }
         if(!filesDeleted){
           System.out.println("Error deleting files, reverting...");
-          for(File f : files){
+          for(MyFile f : files){
             directory.addFile(f, true);
           }
           Files.write(FILE_PATH, fileContent, StandardCharsets.UTF_8);
@@ -184,7 +184,7 @@ public class FileSystem {
 	      return false;
 	    }
 	    for(int i = 0; i < directory.getFileList().size(); i++){
-	      File file = directory.getFileList().get(i);
+	      MyFile file = directory.getFileList().get(i);
 	      if(file.get_name().toLowerCase().equals(pName.toLowerCase()) &&
 	          file.get_extension().toLowerCase().equals(pExtension.toLowerCase())){
 	        ArrayList<Integer> pos = file.get_fileLines();
@@ -273,7 +273,7 @@ public class FileSystem {
 	}
 	
 	private boolean addFileToDirectory(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines, boolean pOverwrite) {
-		File newFile = new File(pName, pExtension, pContent, pFileLines);
+		MyFile newFile = new MyFile(pName, pExtension, pContent, pFileLines);
 		return searchDirectory(_currentDirectory).addFile(newFile, pOverwrite);
 	}
 		
@@ -382,7 +382,7 @@ public class FileSystem {
 	
 	private void printDirectoryFiles() {
 		DirectoryTree directoryToShow = searchDirectory(_currentDirectory);
-		for(File file : directoryToShow.getFileList()) {
+		for(MyFile file : directoryToShow.getFileList()) {
 			System.out.println(file.get_name() + "." + file.get_extension() + " - FILE");
 		}
 	}
@@ -397,7 +397,7 @@ public class FileSystem {
 	public boolean modFile(String pFileName, String pNewContent) {
 		//TODO modificar un archivo que esté en el directorio actual
 		String[] nameArray = getFixedFileName(pFileName);
-		File fileTemp = searchFile(nameArray[0] + "." +  nameArray[1]);
+		MyFile fileTemp = searchFile(nameArray[0] + "." +  nameArray[1]);
 		if(fileTemp != null) {
 			if(createFile(nameArray[0], nameArray[1], pNewContent, true)) {
 				return true;
@@ -411,7 +411,7 @@ public class FileSystem {
 	public boolean showProperties(String pFileName) {
 		String[] nameArray = getFixedFileName(pFileName);
 		if(nameArray != null) {
-			File file = searchFile(nameArray[0] + "." + nameArray[1]);
+			MyFile file = searchFile(nameArray[0] + "." + nameArray[1]);
 			if(file != null) {
 				System.out.println("FILE NAME: " + file.get_name());
 				System.out.println("EXTENSION: " + file.get_extension());
@@ -427,7 +427,7 @@ public class FileSystem {
 	public boolean showFile(String pFileName) {
 		String[] nameArray = getFixedFileName(pFileName);
 		if(nameArray != null) {
-			File file = searchFile(nameArray[0] + "." + nameArray[1]);
+			MyFile file = searchFile(nameArray[0] + "." + nameArray[1]);
 			if(file != null) {
 				System.out.println("FILE CONTENT: \n" + file.get_content());
 				return true;
@@ -436,9 +436,9 @@ public class FileSystem {
 		return false;
 	}
 	
-	private File searchFile(String pFileName) {
+	private MyFile searchFile(String pFileName) {
 		DirectoryTree currentDirectory = searchDirectory(_currentDirectory);
-		for(File file : currentDirectory.getFileList()) {
+		for(MyFile file : currentDirectory.getFileList()) {
 			if((file.get_name().toLowerCase() + "." + file.get_extension().toLowerCase()).equals(pFileName.toLowerCase())) {
 				return file;
 			}
@@ -479,7 +479,23 @@ public class FileSystem {
 			System.out.println("Copying directory. How dare you.");
 			return false;
 		}
-		
+	}
+	
+	private void copyallfiles(java.io.File curDir){
+		java.io.File[] filesList = curDir.listFiles();
+	    for(java.io.File f : filesList){
+	    	if(f.isDirectory()){
+	    		//Crear directorio
+	    		//Moverme al directorio
+	    		copyallfiles(f);
+	    		//Volver al anterior
+	    	}
+	    		
+	        if(f.isFile()){
+	        	//Copiar archivo
+	            System.out.println(f.getName());
+	        }
+	    }
 	}
 	
 	private boolean copyrvfile (String pRealPath, String pVirtualDestination) {
@@ -545,7 +561,7 @@ public class FileSystem {
       
       if (originFolder == null) {return false;}
       
-      for(File f : originFolder.getFileList()){
+      for(MyFile f : originFolder.getFileList()){
           if(pFileToCopy.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
               try{
                   PrintWriter writer = new PrintWriter(pRealPath+"/"+f.get_name()+"."+f.get_extension(), "UTF-8");
@@ -593,7 +609,7 @@ public class FileSystem {
 	      
 	      if (originFolder == null) {return false;}
 	      
-	      for(File f : originFolder.getFileList()){
+	      for(MyFile f : originFolder.getFileList()){
 	          if(pFileToCopy.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
 	              if (changeDirectory(pDestinationPath)) {
 	                  createFile(f.get_name(), f.get_extension(), f.get_content(), false);
