@@ -464,8 +464,25 @@ public class FileSystem {
 		}
 		return null;
 	}
-
+	
+	
+//Copy
+	private boolean fileOrFolder (String path){
+		return path.contains("."); 
+	}
+//Real to virtual
 	public boolean copyRealToVirtual (String pRealPath, String pVirtualDestination) { //Copies a real file into the virtual file in the current directory
+		if (fileOrFolder(pRealPath)) {
+			return copyrvfile(pRealPath, pVirtualDestination);
+		}
+		else {
+			System.out.println("Copying directory. How dare you.");
+			return false;
+		}
+		
+	}
+	
+	private boolean copyrvfile (String pRealPath, String pVirtualDestination) {
 		String originalPlace = _currentDirectory;
 	    String finalDestination = toAbsolute(_currentDirectory, pVirtualDestination);
 	  
@@ -498,18 +515,28 @@ public class FileSystem {
 			return false;
 		}
 	}
-	
+//Virtual to real
 	public boolean copyVirtualToReal (String pVirtualPath, String pRealPath) { //Copies a real file into the virtual file in the current directory
-	  String originPath = toAbsolute(_currentDirectory,pVirtualPath.toLowerCase());
-    
-      String[] splitOPath = originPath.split("\\/");
-      String dirPath = ""; 
-      String filename = splitOPath[splitOPath.length-1];
-      for (int i = 0; i < splitOPath.length-1; i++ ) {
-        dirPath += splitOPath[i]  + "/";
-      }
-    
-      return copyvrAux (dirPath,filename,pRealPath);
+		if (fileOrFolder(pVirtualPath)) {
+			return copyvrfile(pVirtualPath, pRealPath);
+		}
+		else {
+			System.out.println("Copying directory. How dare you.");
+			return false;
+		}
+	}
+	
+	private boolean copyvrfile(String pVirtualPath, String pRealPath){
+		String originPath = toAbsolute(_currentDirectory,pVirtualPath.toLowerCase());
+	    
+	      String[] splitOPath = originPath.split("\\/");
+	      String dirPath = ""; 
+	      String filename = splitOPath[splitOPath.length-1];
+	      for (int i = 0; i < splitOPath.length-1; i++ ) {
+	        dirPath += splitOPath[i]  + "/";
+	      }
+	    
+	      return copyvrAux (dirPath,filename,pRealPath);
 	}
 	
 	private boolean copyvrAux (String pDirectoryPath, String pFileToCopy, String pRealPath){
@@ -532,10 +559,19 @@ public class FileSystem {
       }
       return false;
 	}
-	
+//Virtual to virtual
 	public boolean copyVirtualToVirtual (String pVirtualOrigin, String pVirtualDestination) { //Copies a real file into the virtual file in the current directory
-	    
-	    String originPath = toAbsolute(_currentDirectory,pVirtualOrigin.toLowerCase());
+		if (fileOrFolder(pVirtualOrigin)) {
+			return copyvvfile(pVirtualOrigin, pVirtualDestination);
+		}
+		else {
+			System.out.println("Copying directory. How dare you.");
+			return false;
+		}
+	}
+	
+	private boolean copyvvfile(String pVirtualOrigin, String pVirtualDestination){
+		String originPath = toAbsolute(_currentDirectory,pVirtualOrigin.toLowerCase());
         String destinyPath = toAbsolute(_currentDirectory,pVirtualDestination.toLowerCase());
       
         String[] splitOPath = originPath.split("\\/");
@@ -551,23 +587,25 @@ public class FileSystem {
 	}
 	
 	private boolean copyvvAux (String pDirectoryPath, String pFileToCopy, String pDestinationPath) {
-	  
-      DirectoryTree originFolder = searchDirectory(pDirectoryPath);
-      
-      if (originFolder == null) {return false;}
-      
-      for(File f : originFolder.getFileList()){
-          if(pFileToCopy.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
-              if (changeDirectory(pDestinationPath)) {
-                  createFile(f.get_name(), f.get_extension(), f.get_content(), false);
-                  changeDirectory(pDirectoryPath);
-                  return true;
-              }
-          } 
-      }
-      return false;
-	}
+
+		  
+	      DirectoryTree originFolder = searchDirectory(pDirectoryPath);
+	      
+	      if (originFolder == null) {return false;}
+	      
+	      for(File f : originFolder.getFileList()){
+	          if(pFileToCopy.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
+	              if (changeDirectory(pDestinationPath)) {
+	                  createFile(f.get_name(), f.get_extension(), f.get_content(), false);
+	                  changeDirectory(pDirectoryPath);
+	                  return true;
+	              }
+	          } 
+	      }
+	      return false;
+		}
 	
+//Tree
 	public void treeFileSystem () {
 		_mainDirectory.treeFileSystem(0);
 	}
