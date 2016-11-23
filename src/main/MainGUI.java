@@ -115,6 +115,23 @@ public class MainGUI {
 			System.out.println("Invalid parameter");
 		}
 	}
+	public void modFile(String[] pInputArray) {
+		if(pInputArray.length == 2) {
+			if(_fileSystem.showFile(pInputArray[1])) {
+				System.out.println("Showing the current file content above\nWrite new content:");
+				String newContent = _input.nextLine();
+				if(_fileSystem.modFile(pInputArray[1], newContent)) {
+					System.out.println("File changed");
+				} else {
+					System.out.println("Error modifying file");
+				}
+			} else {
+				System.out.println("Error modifying file - Probably doesn't exist");
+			}
+		} else {
+			System.out.println("Invalid parameter");
+		}
+	}
 	public void showpro (String[] pInputArray) {
 		if(pInputArray.length == 2) {
 			if(_fileSystem.showProperties(pInputArray[1])) { //cdir path (absoluto o relativo)
@@ -252,9 +269,7 @@ public class MainGUI {
 				case "move": move(inputArray); break;
 				case "remove": remove(inputArray); break;
 				
-				case "modfile": 
-					// TODO Modificar un archivo que se encuentra en el directorio actual
-					break;
+				case "modfile": modFile(inputArray); break;
 				case "find": find(inputArray); break;
 				case "tree": tree(inputArray); break;
 				
