@@ -114,11 +114,17 @@ public class DirectoryTree {
 		return _files;
 	}
 	
+	public String relativeToAbsolute (String pPathSoFar, String pCurrent) {
+		for (int i = 0; i < _directoryTree.size(); i++){
+			if (_directoryTree.get(i).getName() == pCurrent){ return pPathSoFar + pCurrent; }
+			else { relativeToAbsolute(pPathSoFar + _directoryTree.get(i).getName(), pCurrent); }
+		}
+		return "failed";
+	}
 	
 	private void nTabs(int n){
 		for(int i =0; i < n; i++) { System.out.print("\t");	 }
 	}
-	
 	public void treeFileSystem (int depth) {
 		for (int i = 0; i < _directoryTree.size(); i++){
 			nTabs (depth);
@@ -130,8 +136,7 @@ public class DirectoryTree {
 			System.out.println(_files.get(i).get_name()+"."+_files.get(i).get_extension());
 			
 		}	
-	}
-	
+	}	
 	public void findFileOrDirectory(String pName, String pCurrentName, boolean pKindOfSearch, boolean pSearchAll) {
 		_pathForFind = pCurrentName;
 		for (int i = 0; i < _directoryTree.size(); i++){

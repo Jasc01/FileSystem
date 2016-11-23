@@ -160,7 +160,7 @@ public class MainGUI {
 	}
 	public void find(String[] pInputArray) {
 		if (pInputArray.length == 2) {
-			_fileSystem.findFileOrDirectory(pInputArray[1]);;
+			//_fileSystem.findFileOrDirectory(pInputArray[1]);;
 		} else {
 			System.out.println("Unknown command");
 		}
@@ -208,7 +208,8 @@ public class MainGUI {
 						System.out.println("Invalid parameter");
 					}
 					break;
-				
+				case "sd":
+					System.out.println(_fileSystem.getCurrentDirectory());
 				default:
 					System.out.println("Command not found");
 					break;

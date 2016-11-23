@@ -269,6 +269,7 @@ public class FileSystem {
 	
 	public boolean createDirectory(String pName, boolean pOverwrite) {
 		DirectoryTree newDirectory = new DirectoryTree(pName);
+		
 		return searchDirectory(_currentDirectory).addDirectory(newDirectory, pOverwrite);
 	}
 	
@@ -423,6 +424,10 @@ public class FileSystem {
 		_mainDirectory.treeFileSystem(0);
 	}
 	
+	public String relativeToAbsolute (String pInputPath) {
+		return _mainDirectory.relativeToAbsolute("root:/",pInputPath);
+	}
+	/*
 	public void findFileOrDirectory(String pName) {
 		String[] nameFixed = getFixedFileName(pName);
 		if(nameFixed != null) {
@@ -434,5 +439,5 @@ public class FileSystem {
 		} else {
 			_mainDirectory.findFileOrDirectory(pName, _mainDirectory.getName(), true, false);
 		}
-	}
+	}*/
 }
