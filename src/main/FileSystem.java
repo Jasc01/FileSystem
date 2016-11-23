@@ -60,7 +60,7 @@ public class FileSystem {
 	
 	public boolean moveFile(String pFile, String pDestination){
 	  DirectoryTree origin = searchDirectory(_currentDirectory);
-	  DirectoryTree destination = searchDirectory(pDestination.toLowerCase());
+	  DirectoryTree destination = searchDirectory(toAbsolute(_currentDirectory,pDestination.toLowerCase()));
 	  for(File f : origin.getFileList()){
 	    if(pFile.toLowerCase().equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
 	      destination.addFile(f, false);
@@ -291,20 +291,13 @@ public class FileSystem {
       //El pPathSoFar siempre es absoluto. 
     
       String[] relativeArray = pCurrent.split("\\/");
-      System.out.println("Actual: " + pPathSoFar);
-      System.out.println("Relativo: " + pCurrent);
       
-      for(int i = 0; i <relativeArray.length; i++) {
-          System.out.println(relativeArray[i]);
-      }
       for (int i = 0; i < relativeArray.length; i++){
-          System.out.println(pPathSoFar);
-          System.out.println("Procesando: " + relativeArray[i]);
           
           if (relativeArray[i].equals("..")){
               String[] splitPath = pPathSoFar.split("/");
               pPathSoFar = ""; 
-              System.out.println("Retrocediendo");
+              
               if (!pPathSoFar.equals(_mainDirectory.getName())) {
                   for (int j = 0; j<splitPath.length-1; j++){ //-1 para que retroceda en el path 
                       if (pPathSoFar.equals("")){
@@ -325,21 +318,20 @@ public class FileSystem {
       return pPathSoFar;
     }
 	
-	public boolean changeDirectory(String pNewPath) { //NOTA: cuando escribe nombre///////nombre2 simplemente no lo permite
-		String[] dividedPath = pNewPath.split("/");
-		if(dividedPath[0].toLowerCase().equals(_rootName.toLowerCase())) {
-			//Buscar path absoluto
-			if(searchDirectory(pNewPath) != null) {
-				_currentDirectory = pNewPath.toLowerCase();
-				return true;
-			}
-		} else {
-			String pathToSearch = relativeToAbsolute(_currentDirectory,pNewPath);
-			//Buscar path relativo
-			if(searchDirectory(pathToSearch) != null) {
-				_currentDirectory = pathToSearch.toLowerCase();
-				return true;
-			}
+	private String toAbsolute (String pCurrentDirectory, String pNewPath) {
+	    String[] dividedPath = pNewPath.split("/");
+        if(dividedPath[0].toLowerCase().equals(_rootName.toLowerCase())) {
+            return relativeToAbsolute(pNewPath,"");
+        } else {
+            return relativeToAbsolute(_currentDirectory,pNewPath);
+        }
+	}
+	
+	public boolean changeDirectory(String pNewPath) { 
+	    String pathToSearch = toAbsolute(_currentDirectory, pNewPath);
+		if(searchDirectory(pathToSearch) != null) {
+			_currentDirectory = pathToSearch.toLowerCase();
+			return true;
 		}
 		return false;
 	}
