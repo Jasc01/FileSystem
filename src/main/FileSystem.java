@@ -252,6 +252,54 @@ public class FileSystem {
 		return fileCreated;
 	}
 	
+	public boolean createFile(String pName, String pExtension, String pContent, boolean pOverwrite, String pOldDate) {
+		boolean fileCreated = false;
+		
+	    char[] bytes = new char[_secSize];
+	    Arrays.fill(bytes, ' ');
+	    String stringFilled = new String(bytes);
+	    
+		Path FILE_PATH = Paths.get(_virtualDiskName);
+		ArrayList<String> fileContent;
+		
+		if(pOverwrite){
+	      deleteFile(pName, pExtension);
+	    }
+		
+		try {
+			fileContent = new ArrayList<>(Files.readAllLines(FILE_PATH, StandardCharsets.UTF_8));
+			if(pContent.length() <= _secSize) {
+				for (int i = 0; i < fileContent.size(); i++) {
+				    if (fileContent.get(i).equals(stringFilled)) {
+				    	ArrayList<Integer> lines = new ArrayList<>();
+				    	lines.add(i);
+				    	if(addFileToDirectory(pName, pExtension, pContent, lines, pOverwrite, pOldDate)) {
+				    		fileContent.set(i, pContent);
+					        fileCreated = true;
+					        break;	
+				    	}
+				    }
+				}
+			} else { // Enlaza
+				ArrayList<String> stringDivided = divideString(pContent, _secSize);
+				ArrayList<Integer> memoryLeft = getMemoryLeftInFile(fileContent, stringFilled);
+				if(stringDivided.size() <= memoryLeft.size()) {
+					memoryLeft.subList(stringDivided.size(), memoryLeft.size()).clear();
+			    	if(addFileToDirectory(pName, pExtension, pContent, memoryLeft, pOverwrite,pOldDate)) {
+			    		for(int i = 0 ; i < memoryLeft.size(); i++) {
+				    		fileContent.set(memoryLeft.get(i), stringDivided.get(i));	
+			    		}
+				        fileCreated = true;
+			    	}
+				}
+			}
+			Files.write(FILE_PATH, fileContent, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			System.out.println("Error creating the file");
+		}
+		return fileCreated;
+	}
+	
 	private ArrayList<Integer> getMemoryLeftInFile(ArrayList<String> pList, String pBlank) {
 		ArrayList<Integer> memoryLeft = new ArrayList<>();
 		for (int i = 0; i < pList.size(); i++) {
@@ -275,6 +323,11 @@ public class FileSystem {
 	
 	private boolean addFileToDirectory(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines, boolean pOverwrite) {
 		MyFile newFile = new MyFile(pName, pExtension, pContent, pFileLines);
+		return searchDirectory(_currentDirectory).addFile(newFile, pOverwrite);
+	}
+	
+	private boolean addFileToDirectory(String pName, String pExtension, String pContent, ArrayList<Integer> pFileLines, boolean pOverwrite, String pOldDate) {
+		MyFile newFile = new MyFile(pName, pExtension, pContent, pFileLines, pOldDate);
 		return searchDirectory(_currentDirectory).addFile(newFile, pOverwrite);
 	}
 		
@@ -396,11 +449,10 @@ public class FileSystem {
 	}
 	
 	public boolean modFile(String pFileName, String pNewContent) {
-		//TODO modificar un archivo que esté en el directorio actual
 		String[] nameArray = getFixedFileName(pFileName);
 		MyFile fileTemp = searchFile(nameArray[0] + "." +  nameArray[1]);
 		if(fileTemp != null) {
-			if(createFile(nameArray[0], nameArray[1], pNewContent, true)) {
+			if(createFile(nameArray[0], nameArray[1], pNewContent, true, fileTemp.get_creationDate())) {
 				return true;
 			} else {
 				return false;

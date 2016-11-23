@@ -67,6 +67,12 @@ public class MyFile {
 	public String get_modificationDate() {
 		return _modificationDate;
 	}
+	
+	public void setModificationDate() {
+	    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        _modificationDate = dateFormat.format(date);
+	}
 
 	public ArrayList<Integer> get_fileLines() {
 		return _fileLines;
