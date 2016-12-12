@@ -397,6 +397,19 @@ public class FileSystem {
 	
 	public boolean modFile(String pFileName, String pNewContent) {
 		//TODO modificar un archivo que esté en el directorio actual
+	    DirectoryTree directory = searchDirectory(_currentDirectory);
+	    for(MyFile f : directory.getFileList()){
+	      if(pFileName.equals(f.get_name().toLowerCase() + "." + f.get_extension().toLowerCase())){
+	        MyFile nf = new MyFile(f.get_name(), f.get_extension(), f.get_content(), f.get_fileLines(), f.get_creationDate());
+	        if(createFile(nf.get_name(), nf.get_extension(), pNewContent, true)){
+	          directory.addFile(nf, true);
+	          return true;
+	        } else{
+	          return false;
+	        }
+            
+	      }
+	    }/*
 		String[] nameArray = getFixedFileName(pFileName);
 		MyFile fileTemp = searchFile(nameArray[0] + "." +  nameArray[1]);
 		if(fileTemp != null) {
@@ -405,7 +418,7 @@ public class FileSystem {
 			} else {
 				return false;
 			}
-		}
+		}*/
 		return false;
 	}
 	
